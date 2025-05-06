@@ -52,6 +52,14 @@ CREATE TABLE IF NOT EXISTS paniers (
     FOREIGN KEY (produit_id) REFERENCES produits(id)
 );
 
+-- Table des images des produits
+CREATE TABLE IF NOT EXISTS images_produit (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    produit_id INT,
+    image VARCHAR(255),
+    FOREIGN KEY (produit_id) REFERENCES produits(id) ON DELETE CASCADE
+);
+
 -- Insertion des produits Phone Accessories
 INSERT INTO produits (nom, prix, description, categorie) VALUES
 ('Silicone Phone Case', 39, 'Ultra-thin, shockproof, multiple colors', 'Phone Accessories'),

@@ -65,7 +65,43 @@ include 'includes/header.php';
         </tr>
         <?php foreach ($products as $prod) : ?>
         <tr>
-            <td><?= htmlspecialchars($prod['nom']) ?></td>
+            <td>
+                <?php
+                $stmt_imgs = $pdo->prepare('SELECT image FROM images_produit WHERE produit_id = ?');
+                $stmt_imgs->execute([$prod['id']]);
+                $images = $stmt_imgs->fetchAll(PDO::FETCH_COLUMN);
+                ?>
+                <div class="product-gallery" style="text-align:center; position:relative;">
+                    <?php if ($images && count($images) > 0): ?>
+                        <span onclick="prevImgSearch(<?= $prod['id'] ?>)" style="cursor:pointer; position:absolute; left:0; top:50%; transform:translateY(-50%); font-size:18px; color:#333; padding:2px 6px; z-index:2;">
+                            <svg width="20" height="20" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                        <img src="assets/images/<?= htmlspecialchars($images[0]) ?>" alt="<?= htmlspecialchars($prod['nom']) ?>" style="max-width:80px; max-height:60px; margin-bottom:2px;" id="main-img-<?= $prod['id'] ?>-search">
+                        <span onclick="nextImgSearch(<?= $prod['id'] ?>)" style="cursor:pointer; position:absolute; right:0; top:50%; transform:translateY(-50%); font-size:18px; color:#333; padding:2px 6px; z-index:2;">
+                            <svg width="20" height="20" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                        <?php if (count($images) > 1): ?>
+                            <script>
+                            var imgsS<?= $prod['id'] ?> = <?= json_encode($images) ?>;
+                            var idxS<?= $prod['id'] ?> = 0;
+                            function nextImgSearch(pid) {
+                                if (window['idxS'+pid] < window['imgsS'+pid].length-1) window['idxS'+pid]++;
+                                else window['idxS'+pid]=0;
+                                document.getElementById('main-img-'+pid+'-search').src = 'assets/images/' + window['imgsS'+pid][window['idxS'+pid]];
+                            }
+                            function prevImgSearch(pid) {
+                                if (window['idxS'+pid] > 0) window['idxS'+pid]--;
+                                else window['idxS'+pid]=window['imgsS'+pid].length-1;
+                                document.getElementById('main-img-'+pid+'-search').src = 'assets/images/' + window['imgsS'+pid][window['idxS'+pid]];
+                            }
+                            window['imgsS'+<?= $prod['id'] ?>] = imgsS<?= $prod['id'] ?>;
+                            window['idxS'+<?= $prod['id'] ?>] = 0;
+                            </script>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                </div>
+                <br><?= htmlspecialchars($prod['nom']) ?>
+            </td>
             <td><?= number_format($prod['prix'], 2) ?> €</td>
             <td><?= htmlspecialchars($prod['categorie']) ?></td>
             <td><a href="cart.php?add=<?= $prod['id'] ?>">Ajouter au panier</a></td>

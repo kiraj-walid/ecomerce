@@ -24,11 +24,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_product'])) {
     $description = trim($_POST['description']);
     $prix = floatval($_POST['price']);
     $categorie = trim($_POST['category']);
-    $image = trim($_POST['image']);
+    $image_list = trim($_POST['images']); // champ images (fichiers séparés par des virgules)
 
     if ($nom && $prix) {
-        $stmt = $pdo->prepare('INSERT INTO produits (nom, description, prix, categorie, image) VALUES (?, ?, ?, ?, ?)');
-        if ($stmt->execute([$nom, $description, $prix, $categorie, $image])) {
+        $stmt = $pdo->prepare('INSERT INTO produits (nom, description, prix, categorie) VALUES (?, ?, ?, ?)');
+        if ($stmt->execute([$nom, $description, $prix, $categorie])) {
+            $produit_id = $pdo->lastInsertId();
+            // Insertion des images
+            if (!empty($image_list)) {
+                $images = array_map('trim', explode(',', $image_list));
+                foreach ($images as $img) {
+                    if ($img !== '') {
+                        $stmt_img = $pdo->prepare('INSERT INTO images_produit (produit_id, image) VALUES (?, ?)');
+                        $stmt_img->execute([$produit_id, $img]);
+                    }
+                }
+            }
             $message = "Produit ajouté avec succès.";
         } else {
             $message = "Erreur lors de l'ajout du produit.";
@@ -59,8 +70,8 @@ include '../includes/header.php';
     <input type="number" step="0.01" name="price" required><br>
     <label>Catégorie :</label><br>
     <input type="text" name="category"><br>
-    <label>Image (nom du fichier) :</label><br>
-    <input type="text" name="image"><br>
+    <label>Images (fichiers séparés par des virgules) :</label><br>
+    <input type="text" name="images" placeholder="ex: img1.jpg, img2.png"><br>
     <button type="submit">Ajouter</button>
 </form>
 

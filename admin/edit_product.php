@@ -21,17 +21,34 @@ if (!$product) {
     redirect('products.php');
 }
 
+// Récupérer les images du produit
+$stmt_imgs = $pdo->prepare('SELECT image FROM images_produit WHERE produit_id = ?');
+$stmt_imgs->execute([$id]);
+$images = $stmt_imgs->fetchAll(PDO::FETCH_COLUMN);
+$image_list = implode(', ', $images);
+
 // Traitement de la modification
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_product'])) {
     $nom = trim($_POST['name']);
     $description = trim($_POST['description']);
     $prix = floatval($_POST['price']);
     $categorie = trim($_POST['category']);
-    $image = trim($_POST['image']);
+    $image_list = trim($_POST['images']);
 
     if ($nom && $prix) {
-        $stmt = $pdo->prepare('UPDATE produits SET nom=?, description=?, prix=?, categorie=?, image=? WHERE id=?');
-        if ($stmt->execute([$nom, $description, $prix, $categorie, $image, $id])) {
+        $stmt = $pdo->prepare('UPDATE produits SET nom=?, description=?, prix=?, categorie=? WHERE id=?');
+        if ($stmt->execute([$nom, $description, $prix, $categorie, $id])) {
+            // Mettre à jour les images
+            $pdo->prepare('DELETE FROM images_produit WHERE produit_id = ?')->execute([$id]);
+            if (!empty($image_list)) {
+                $images = array_map('trim', explode(',', $image_list));
+                foreach ($images as $img) {
+                    if ($img !== '') {
+                        $stmt_img = $pdo->prepare('INSERT INTO images_produit (produit_id, image) VALUES (?, ?)');
+                        $stmt_img->execute([$id, $img]);
+                    }
+                }
+            }
             $message = "Produit modifié avec succès.";
             // Recharger les données
             $stmt = $pdo->prepare('SELECT * FROM produits WHERE id = ?');
@@ -61,8 +78,8 @@ include '../includes/header.php';
     <input type="number" step="0.01" name="price" value="<?= $product['prix'] ?>" required><br>
     <label>Catégorie :</label><br>
     <input type="text" name="category" value="<?= htmlspecialchars($product['categorie']) ?>"><br>
-    <label>Image (nom du fichier) :</label><br>
-    <input type="text" name="image" value="<?= isset($product['image']) ? htmlspecialchars($product['image']) : '' ?>"><br>
+    <label>Images (fichiers séparés par des virgules) :</label><br>
+    <input type="text" name="images" value="<?= htmlspecialchars($image_list) ?>" placeholder="ex: img1.jpg, img2.png"><br>
     <button type="submit">Enregistrer</button>
     <a href="products.php">Retour à la liste</a>
 </form>
