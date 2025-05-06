@@ -10,13 +10,13 @@ $user_id = $_SESSION['user_id'];
 $message = '';
 
 // Récupérer le panier
-$stmt = $pdo->prepare('SELECT cart.id as cart_id, products.* , cart.quantity FROM cart JOIN products ON cart.product_id = products.id WHERE cart.user_id = ?');
+$stmt = $pdo->prepare('SELECT paniers.id as panier_id, produits.*, paniers.quantite FROM paniers JOIN produits ON paniers.produit_id = produits.id WHERE paniers.utilisateur_id = ?');
 $stmt->execute([$user_id]);
 $cart_items = $stmt->fetchAll();
 
 $total = 0;
 foreach ($cart_items as $item) {
-    $total += $item['price'] * $item['quantity'];
+    $total += $item['prix'] * $item['quantite'];
 }
 
 if (count($cart_items) === 0) {
@@ -24,19 +24,19 @@ if (count($cart_items) === 0) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['place_order'])) {
-    $payment_method = $_POST['payment_method'] ?? '';
-    if ($payment_method === 'livraison' || $payment_method === 'carte') {
+    $mode_paiement = $_POST['payment_method'] ?? '';
+    if ($mode_paiement === 'livraison' || $mode_paiement === 'carte') {
         // Créer la commande
-        $stmt = $pdo->prepare('INSERT INTO orders (user_id, total, status, payment_method) VALUES (?, ?, ?, ?)');
-        if ($stmt->execute([$user_id, $total, 'en_attente', $payment_method])) {
-            $order_id = $pdo->lastInsertId();
+        $stmt = $pdo->prepare('INSERT INTO commandes (utilisateur_id, statut, mode_paiement) VALUES (?, ?, ?)');
+        if ($stmt->execute([$user_id, 'en_attente', $mode_paiement])) {
+            $commande_id = $pdo->lastInsertId();
             // Insérer les lignes de commande
-            $stmt_item = $pdo->prepare('INSERT INTO order_items (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)');
+            $stmt_item = $pdo->prepare('INSERT INTO lignes_commande (commande_id, produit_id, quantite) VALUES (?, ?, ?)');
             foreach ($cart_items as $item) {
-                $stmt_item->execute([$order_id, $item['id'], $item['quantity'], $item['price']]);
+                $stmt_item->execute([$commande_id, $item['id'], $item['quantite']]);
             }
             // Vider le panier
-            $pdo->prepare('DELETE FROM cart WHERE user_id = ?')->execute([$user_id]);
+            $pdo->prepare('DELETE FROM paniers WHERE utilisateur_id = ?')->execute([$user_id]);
             $message = "Commande passée avec succès !";
             $cart_items = [];
         } else {
@@ -63,10 +63,10 @@ include 'includes/header.php';
     </tr>
     <?php foreach ($cart_items as $item) : ?>
     <tr>
-        <td><?= htmlspecialchars($item['name']) ?></td>
-        <td><?= number_format($item['price'], 2) ?> €</td>
-        <td><?= $item['quantity'] ?></td>
-        <td><?= number_format($item['price'] * $item['quantity'], 2) ?> €</td>
+        <td><?= htmlspecialchars($item['nom']) ?></td>
+        <td><?= number_format($item['prix'], 2) ?> €</td>
+        <td><?= $item['quantite'] ?></td>
+        <td><?= number_format($item['prix'] * $item['quantite'], 2) ?> €</td>
     </tr>
     <?php endforeach; ?>
 </table>

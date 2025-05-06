@@ -14,7 +14,7 @@ $id = intval($_GET['id']);
 $message = '';
 
 // Récupérer les infos du client
-$stmt = $pdo->prepare('SELECT * FROM users WHERE id = ? AND role = "client"');
+$stmt = $pdo->prepare('SELECT * FROM utilisateurs WHERE id = ? AND role = "client"');
 $stmt->execute([$id]);
 $user = $stmt->fetch();
 if (!$user) {
@@ -26,11 +26,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user'])) {
     $username = trim($_POST['username']);
     $email = trim($_POST['email']);
     if ($username && $email) {
-        $stmt = $pdo->prepare('UPDATE users SET username=?, email=? WHERE id=?');
+        $stmt = $pdo->prepare('UPDATE utilisateurs SET nom=?, email=? WHERE id=?');
         if ($stmt->execute([$username, $email, $id])) {
             $message = "Client modifié avec succès.";
             // Recharger les données
-            $stmt = $pdo->prepare('SELECT * FROM users WHERE id = ? AND role = "client"');
+            $stmt = $pdo->prepare('SELECT * FROM utilisateurs WHERE id = ? AND role = "client"');
             $stmt->execute([$id]);
             $user = $stmt->fetch();
         } else {
@@ -50,7 +50,7 @@ include '../includes/header.php';
 <form method="post" action="edit_user.php?id=<?= $id ?>">
     <input type="hidden" name="update_user" value="1">
     <label>Nom d'utilisateur :</label><br>
-    <input type="text" name="username" value="<?= htmlspecialchars($user['username']) ?>" required><br>
+    <input type="text" name="username" value="<?= htmlspecialchars($user['nom']) ?>" required><br>
     <label>Email :</label><br>
     <input type="email" name="email" value="<?= htmlspecialchars($user['email']) ?>" required><br>
     <button type="submit">Enregistrer</button>

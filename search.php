@@ -4,40 +4,25 @@ require_once 'includes/functions.php';
 
 // Récupérer les filtres
 $keyword = $_GET['keyword'] ?? '';
-$category = $_GET['category'] ?? '';
-$brand = $_GET['brand'] ?? '';
-$color = $_GET['color'] ?? '';
-$age = $_GET['age'] ?? '';
+$categorie = $_GET['category'] ?? '';
 $sort = $_GET['sort'] ?? '';
 
 // Construction de la requête
-$sql = "SELECT * FROM products WHERE 1";
+$sql = "SELECT * FROM produits WHERE 1";
 $params = [];
 if ($keyword) {
-    $sql .= " AND (name LIKE ? OR description LIKE ?)";
+    $sql .= " AND (nom LIKE ? OR description LIKE ?)";
     $params[] = "%$keyword%";
     $params[] = "%$keyword%";
 }
-if ($category) {
-    $sql .= " AND category = ?";
-    $params[] = $category;
-}
-if ($brand) {
-    $sql .= " AND brand = ?";
-    $params[] = $brand;
-}
-if ($color) {
-    $sql .= " AND color = ?";
-    $params[] = $color;
-}
-if ($age) {
-    $sql .= " AND age_recommended = ?";
-    $params[] = $age;
+if ($categorie) {
+    $sql .= " AND categorie = ?";
+    $params[] = $categorie;
 }
 if ($sort === 'price_asc') {
-    $sql .= " ORDER BY price ASC";
+    $sql .= " ORDER BY prix ASC";
 } elseif ($sort === 'price_desc') {
-    $sql .= " ORDER BY price DESC";
+    $sql .= " ORDER BY prix DESC";
 } else {
     $sql .= " ORDER BY id DESC";
 }
@@ -47,10 +32,7 @@ $stmt->execute($params);
 $products = $stmt->fetchAll();
 
 // Récupérer les valeurs distinctes pour les filtres
-$categories = $pdo->query('SELECT DISTINCT category FROM products WHERE category IS NOT NULL AND category != ""')->fetchAll(PDO::FETCH_COLUMN);
-$brands = $pdo->query('SELECT DISTINCT brand FROM products WHERE brand IS NOT NULL AND brand != ""')->fetchAll(PDO::FETCH_COLUMN);
-$colors = $pdo->query('SELECT DISTINCT color FROM products WHERE color IS NOT NULL AND color != ""')->fetchAll(PDO::FETCH_COLUMN);
-$ages = $pdo->query('SELECT DISTINCT age_recommended FROM products WHERE age_recommended IS NOT NULL AND age_recommended != ""')->fetchAll(PDO::FETCH_COLUMN);
+$categories = $pdo->query('SELECT DISTINCT categorie FROM produits WHERE categorie IS NOT NULL AND categorie != ""')->fetchAll(PDO::FETCH_COLUMN);
 
 include 'includes/header.php';
 ?>
@@ -60,25 +42,7 @@ include 'includes/header.php';
     <select name="category">
         <option value="">Catégorie</option>
         <?php foreach ($categories as $cat) : ?>
-            <option value="<?= htmlspecialchars($cat) ?>" <?= $cat == $category ? 'selected' : '' ?>><?= htmlspecialchars($cat) ?></option>
-        <?php endforeach; ?>
-    </select>
-    <select name="brand">
-        <option value="">Marque</option>
-        <?php foreach ($brands as $b) : ?>
-            <option value="<?= htmlspecialchars($b) ?>" <?= $b == $brand ? 'selected' : '' ?>><?= htmlspecialchars($b) ?></option>
-        <?php endforeach; ?>
-    </select>
-    <select name="color">
-        <option value="">Couleur</option>
-        <?php foreach ($colors as $c) : ?>
-            <option value="<?= htmlspecialchars($c) ?>" <?= $c == $color ? 'selected' : '' ?>><?= htmlspecialchars($c) ?></option>
-        <?php endforeach; ?>
-    </select>
-    <select name="age">
-        <option value="">Âge recommandé</option>
-        <?php foreach ($ages as $a) : ?>
-            <option value="<?= htmlspecialchars($a) ?>" <?= $a == $age ? 'selected' : '' ?>><?= htmlspecialchars($a) ?></option>
+            <option value="<?= htmlspecialchars($cat) ?>" <?= $cat == $categorie ? 'selected' : '' ?>><?= htmlspecialchars($cat) ?></option>
         <?php endforeach; ?>
     </select>
     <select name="sort">
@@ -97,19 +61,13 @@ include 'includes/header.php';
             <th>Nom</th>
             <th>Prix</th>
             <th>Catégorie</th>
-            <th>Marque</th>
-            <th>Couleur</th>
-            <th>Âge recommandé</th>
             <th>Action</th>
         </tr>
         <?php foreach ($products as $prod) : ?>
         <tr>
-            <td><?= htmlspecialchars($prod['name']) ?></td>
-            <td><?= number_format($prod['price'], 2) ?> €</td>
-            <td><?= htmlspecialchars($prod['category']) ?></td>
-            <td><?= htmlspecialchars($prod['brand']) ?></td>
-            <td><?= htmlspecialchars($prod['color']) ?></td>
-            <td><?= htmlspecialchars($prod['age_recommended']) ?></td>
+            <td><?= htmlspecialchars($prod['nom']) ?></td>
+            <td><?= number_format($prod['prix'], 2) ?> €</td>
+            <td><?= htmlspecialchars($prod['categorie']) ?></td>
             <td><a href="cart.php?add=<?= $prod['id'] ?>">Ajouter au panier</a></td>
         </tr>
         <?php endforeach; ?>

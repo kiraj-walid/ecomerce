@@ -10,13 +10,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($username && $email && $password) {
         // Vérifier unicité
-        $stmt = $pdo->prepare('SELECT id FROM users WHERE email = ? OR username = ?');
+        $stmt = $pdo->prepare('SELECT id FROM utilisateurs WHERE email = ? OR nom = ?');
         $stmt->execute([$email, $username]);
         if ($stmt->fetch()) {
             $message = "Email ou nom d'utilisateur déjà utilisé.";
         } else {
             $hash = password_hash($password, PASSWORD_DEFAULT);
-            $stmt = $pdo->prepare('INSERT INTO users (username, email, password) VALUES (?, ?, ?)');
+            $stmt = $pdo->prepare('INSERT INTO utilisateurs (nom, email, mot_de_passe) VALUES (?, ?, ?)');
             if ($stmt->execute([$username, $email, $hash])) {
                 $message = "Inscription réussie. <a href='login.php'>Connectez-vous</a>.";
             } else {

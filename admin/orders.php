@@ -12,7 +12,7 @@ if (isset($_POST['update_status']) && isset($_POST['order_id']) && isset($_POST[
     $order_id = intval($_POST['order_id']);
     $status = $_POST['status'];
     if (in_array($status, ['en_attente', 'payee', 'livree', 'annulee'])) {
-        $stmt = $pdo->prepare('UPDATE orders SET status = ? WHERE id = ?');
+        $stmt = $pdo->prepare('UPDATE commandes SET statut = ? WHERE id = ?');
         if ($stmt->execute([$status, $order_id])) {
             $message = "Statut mis à jour.";
         } else {
@@ -22,7 +22,7 @@ if (isset($_POST['update_status']) && isset($_POST['order_id']) && isset($_POST[
 }
 
 // Récupérer toutes les commandes
-$orders = $pdo->query('SELECT orders.*, users.username FROM orders JOIN users ON orders.user_id = users.id ORDER BY created_at DESC')->fetchAll();
+$orders = $pdo->query('SELECT commandes.*, utilisateurs.nom as client_nom FROM commandes JOIN utilisateurs ON commandes.utilisateur_id = utilisateurs.id ORDER BY date_commande DESC')->fetchAll();
 
 include '../includes/header.php';
 ?>
@@ -35,31 +35,34 @@ include '../includes/header.php';
 <?php else : ?>
     <?php foreach ($orders as $order) : ?>
         <div style="border:1px solid #ccc; margin-bottom:20px; padding:10px;">
-            <strong>Commande n°<?= $order['id'] ?></strong> du <?= $order['created_at'] ?><br>
-            Client : <?= htmlspecialchars($order['username']) ?><br>
-            Statut : <strong><?= htmlspecialchars($order['status']) ?></strong> |
-            Paiement : <?= htmlspecialchars($order['payment_method']) ?><br>
-            Total : <strong><?= number_format($order['total'], 2) ?> €</strong>
+            <strong>Commande n°<?= $order['id'] ?></strong> du <?= $order['date_commande'] ?><br>
+            Client : <?= htmlspecialchars($order['client_nom']) ?><br>
+            Statut : <strong><?= htmlspecialchars($order['statut']) ?></strong> |
+            Paiement : <?= htmlspecialchars($order['mode_paiement']) ?><br>
             <form method="post" action="orders.php" style="margin-top:5px;">
                 <input type="hidden" name="order_id" value="<?= $order['id'] ?>">
                 <select name="status">
-                    <option value="en_attente" <?= $order['status']=='en_attente'?'selected':'' ?>>En attente</option>
-                    <option value="payee" <?= $order['status']=='payee'?'selected':'' ?>>Payée</option>
-                    <option value="livree" <?= $order['status']=='livree'?'selected':'' ?>>Livrée</option>
-                    <option value="annulee" <?= $order['status']=='annulee'?'selected':'' ?>>Annulée</option>
+                    <option value="en_attente" <?= $order['statut']=='en_attente'?'selected':'' ?>>En attente</option>
+                    <option value="payee" <?= $order['statut']=='payee'?'selected':'' ?>>Payée</option>
+                    <option value="livree" <?= $order['statut']=='livree'?'selected':'' ?>>Livrée</option>
+                    <option value="annulee" <?= $order['statut']=='annulee'?'selected':'' ?>>Annulée</option>
                 </select>
                 <button type="submit" name="update_status">Changer le statut</button>
             </form>
             <u>Produits commandés :</u>
             <ul>
             <?php
-            $stmt_items = $pdo->prepare('SELECT order_items.*, products.name FROM order_items JOIN products ON order_items.product_id = products.id WHERE order_items.order_id = ?');
+            $stmt_items = $pdo->prepare('SELECT lignes_commande.*, produits.nom, produits.prix FROM lignes_commande JOIN produits ON lignes_commande.produit_id = produits.id WHERE lignes_commande.commande_id = ?');
             $stmt_items->execute([$order['id']]);
             $items = $stmt_items->fetchAll();
-            foreach ($items as $item) : ?>
-                <li><?= htmlspecialchars($item['name']) ?> x <?= $item['quantity'] ?> (<?= number_format($item['price'], 2) ?> €)</li>
+            $total = 0;
+            foreach ($items as $item) :
+                $total += $item['prix'] * $item['quantite'];
+            ?>
+                <li><?= htmlspecialchars($item['nom']) ?> x <?= $item['quantite'] ?> (<?= number_format($item['prix'], 2) ?> €)</li>
             <?php endforeach; ?>
             </ul>
+            Total : <strong><?= number_format($total, 2) ?> €</strong>
         </div>
     <?php endforeach; ?>
 <?php endif; ?>

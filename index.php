@@ -4,7 +4,7 @@ require_once 'includes/functions.php';
 include 'includes/header.php';
 
 // Récupérer les 8 derniers produits
-$products = $pdo->query('SELECT * FROM products ORDER BY id DESC LIMIT 8')->fetchAll();
+$products = $pdo->query('SELECT * FROM produits ORDER BY id DESC LIMIT 8')->fetchAll();
 ?>
 <h1>Bienvenue sur la Boutique en Ligne</h1>
 <p>
@@ -20,11 +20,11 @@ $products = $pdo->query('SELECT * FROM products ORDER BY id DESC LIMIT 8')->fetc
     <?php foreach ($products as $prod) : ?>
         <div style="border:1px solid #ccc; padding:10px; width:220px; background:#fff;">
             <?php if (!empty($prod['image'])) : ?>
-                <img src="assets/images/<?= htmlspecialchars($prod['image']) ?>" alt="<?= htmlspecialchars($prod['name']) ?>" style="max-width:200px; max-height:120px;"><br>
+                <img src="assets/images/<?= htmlspecialchars($prod['image']) ?>" alt="<?= htmlspecialchars($prod['nom']) ?>" style="max-width:200px; max-height:120px;"><br>
             <?php endif; ?>
-            <strong><?= htmlspecialchars($prod['name']) ?></strong><br>
-            <span><?= number_format($prod['price'], 2) ?> €</span><br>
-            <span><?= htmlspecialchars($prod['category']) ?></span><br>
+            <strong><?= htmlspecialchars($prod['nom']) ?></strong><br>
+            <span><?= number_format($prod['prix'], 2) ?> €</span><br>
+            <span><?= htmlspecialchars($prod['categorie']) ?></span><br>
             <a href="cart.php?add=<?= $prod['id'] ?>">Ajouter au panier</a>
         </div>
     <?php endforeach; ?>

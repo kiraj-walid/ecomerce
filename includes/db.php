@@ -1,7 +1,7 @@
 <?php
 // Connexion à la base de données
 $host = 'localhost';
-$db   = 'boutique'; // À adapter selon le nom de ta base
+$db   = 'boutique';
 $user = 'root';
 $pass = '';
 $charset = 'utf8mb4';

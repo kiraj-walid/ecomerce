@@ -10,7 +10,7 @@ if (!is_logged_in() || !is_admin()) {
 $message = '';
 if (isset($_GET['delete'])) {
     $id = intval($_GET['delete']);
-    $stmt = $pdo->prepare('DELETE FROM users WHERE id = ? AND role = "client"');
+    $stmt = $pdo->prepare('DELETE FROM utilisateurs WHERE id = ? AND role = "client"');
     if ($stmt->execute([$id])) {
         $message = "Client supprimé avec succès.";
     } else {
@@ -19,7 +19,7 @@ if (isset($_GET['delete'])) {
 }
 
 // Récupérer la liste des clients
-$clients = $pdo->query("SELECT * FROM users WHERE role = 'client' ORDER BY id DESC")->fetchAll();
+$clients = $pdo->query("SELECT * FROM utilisateurs WHERE role = 'client' ORDER BY id DESC")->fetchAll();
 
 include '../includes/header.php';
 ?>
@@ -32,15 +32,13 @@ include '../includes/header.php';
         <th>ID</th>
         <th>Nom d'utilisateur</th>
         <th>Email</th>
-        <th>Date d'inscription</th>
         <th>Actions</th>
     </tr>
     <?php foreach ($clients as $client) : ?>
     <tr>
         <td><?= $client['id'] ?></td>
-        <td><?= htmlspecialchars($client['username']) ?></td>
+        <td><?= htmlspecialchars($client['nom']) ?></td>
         <td><?= htmlspecialchars($client['email']) ?></td>
-        <td><?= $client['created_at'] ?></td>
         <td>
             <a href="edit_user.php?id=<?= $client['id'] ?>">Modifier</a> |
             <a href="users.php?delete=<?= $client['id'] ?>" onclick="return confirm('Supprimer ce client ?');">Supprimer</a>

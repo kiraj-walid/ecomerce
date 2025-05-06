@@ -11,45 +11,45 @@ $message = '';
 
 // Ajouter un produit au panier
 if (isset($_GET['add'])) {
-    $product_id = intval($_GET['add']);
-    $stmt = $pdo->prepare('SELECT id FROM cart WHERE user_id = ? AND product_id = ?');
-    $stmt->execute([$user_id, $product_id]);
+    $produit_id = intval($_GET['add']);
+    $stmt = $pdo->prepare('SELECT id FROM paniers WHERE utilisateur_id = ? AND produit_id = ?');
+    $stmt->execute([$user_id, $produit_id]);
     if ($stmt->fetch()) {
-        $stmt = $pdo->prepare('UPDATE cart SET quantity = quantity + 1 WHERE user_id = ? AND product_id = ?');
-        $stmt->execute([$user_id, $product_id]);
+        $stmt = $pdo->prepare('UPDATE paniers SET quantite = quantite + 1 WHERE utilisateur_id = ? AND produit_id = ?');
+        $stmt->execute([$user_id, $produit_id]);
     } else {
-        $stmt = $pdo->prepare('INSERT INTO cart (user_id, product_id, quantity) VALUES (?, ?, 1)');
-        $stmt->execute([$user_id, $product_id]);
+        $stmt = $pdo->prepare('INSERT INTO paniers (utilisateur_id, produit_id, quantite) VALUES (?, ?, 1)');
+        $stmt->execute([$user_id, $produit_id]);
     }
     $message = "Produit ajouté au panier.";
 }
 
 // Modifier la quantité
 if (isset($_POST['update_qty'])) {
-    foreach ($_POST['qty'] as $cart_id => $qty) {
+    foreach ($_POST['qty'] as $panier_id => $qty) {
         $qty = max(1, intval($qty));
-        $stmt = $pdo->prepare('UPDATE cart SET quantity = ? WHERE id = ? AND user_id = ?');
-        $stmt->execute([$qty, $cart_id, $user_id]);
+        $stmt = $pdo->prepare('UPDATE paniers SET quantite = ? WHERE id = ? AND utilisateur_id = ?');
+        $stmt->execute([$qty, $panier_id, $user_id]);
     }
     $message = "Quantités mises à jour.";
 }
 
 // Supprimer un produit du panier
 if (isset($_GET['delete'])) {
-    $cart_id = intval($_GET['delete']);
-    $stmt = $pdo->prepare('DELETE FROM cart WHERE id = ? AND user_id = ?');
-    $stmt->execute([$cart_id, $user_id]);
+    $panier_id = intval($_GET['delete']);
+    $stmt = $pdo->prepare('DELETE FROM paniers WHERE id = ? AND utilisateur_id = ?');
+    $stmt->execute([$panier_id, $user_id]);
     $message = "Produit supprimé du panier.";
 }
 
 // Récupérer le panier
-$stmt = $pdo->prepare('SELECT cart.id as cart_id, products.* , cart.quantity FROM cart JOIN products ON cart.product_id = products.id WHERE cart.user_id = ?');
+$stmt = $pdo->prepare('SELECT paniers.id as panier_id, produits.*, paniers.quantite FROM paniers JOIN produits ON paniers.produit_id = produits.id WHERE paniers.utilisateur_id = ?');
 $stmt->execute([$user_id]);
 $cart_items = $stmt->fetchAll();
 
 $total = 0;
 foreach ($cart_items as $item) {
-    $total += $item['price'] * $item['quantity'];
+    $total += $item['prix'] * $item['quantite'];
 }
 
 include 'includes/header.php';
@@ -72,11 +72,11 @@ include 'includes/header.php';
     </tr>
     <?php foreach ($cart_items as $item) : ?>
     <tr>
-        <td><?= htmlspecialchars($item['name']) ?></td>
-        <td><?= number_format($item['price'], 2) ?> €</td>
-        <td><input type="number" name="qty[<?= $item['cart_id'] ?>]" value="<?= $item['quantity'] ?>" min="1"></td>
-        <td><?= number_format($item['price'] * $item['quantity'], 2) ?> €</td>
-        <td><a href="cart.php?delete=<?= $item['cart_id'] ?>" onclick="return confirm('Supprimer ce produit ?');">Supprimer</a></td>
+        <td><?= htmlspecialchars($item['nom']) ?></td>
+        <td><?= number_format($item['prix'], 2) ?> €</td>
+        <td><input type="number" name="qty[<?= $item['panier_id'] ?>]" value="<?= $item['quantite'] ?>" min="1"></td>
+        <td><?= number_format($item['prix'] * $item['quantite'], 2) ?> €</td>
+        <td><a href="cart.php?delete=<?= $item['panier_id'] ?>" onclick="return confirm('Supprimer ce produit ?');">Supprimer</a></td>
     </tr>
     <?php endforeach; ?>
 </table>

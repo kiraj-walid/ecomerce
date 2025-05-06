@@ -14,7 +14,7 @@ $id = intval($_GET['id']);
 $message = '';
 
 // Récupérer les infos du produit
-$stmt = $pdo->prepare('SELECT * FROM products WHERE id = ?');
+$stmt = $pdo->prepare('SELECT * FROM produits WHERE id = ?');
 $stmt->execute([$id]);
 $product = $stmt->fetch();
 if (!$product) {
@@ -23,21 +23,18 @@ if (!$product) {
 
 // Traitement de la modification
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_product'])) {
-    $name = trim($_POST['name']);
+    $nom = trim($_POST['name']);
     $description = trim($_POST['description']);
-    $price = floatval($_POST['price']);
-    $category = trim($_POST['category']);
-    $brand = trim($_POST['brand']);
-    $color = trim($_POST['color']);
-    $age_recommended = trim($_POST['age_recommended']);
+    $prix = floatval($_POST['price']);
+    $categorie = trim($_POST['category']);
     $image = trim($_POST['image']);
 
-    if ($name && $price) {
-        $stmt = $pdo->prepare('UPDATE products SET name=?, description=?, price=?, category=?, brand=?, color=?, age_recommended=?, image=? WHERE id=?');
-        if ($stmt->execute([$name, $description, $price, $category, $brand, $color, $age_recommended, $image, $id])) {
+    if ($nom && $prix) {
+        $stmt = $pdo->prepare('UPDATE produits SET nom=?, description=?, prix=?, categorie=?, image=? WHERE id=?');
+        if ($stmt->execute([$nom, $description, $prix, $categorie, $image, $id])) {
             $message = "Produit modifié avec succès.";
             // Recharger les données
-            $stmt = $pdo->prepare('SELECT * FROM products WHERE id = ?');
+            $stmt = $pdo->prepare('SELECT * FROM produits WHERE id = ?');
             $stmt->execute([$id]);
             $product = $stmt->fetch();
         } else {
@@ -57,21 +54,15 @@ include '../includes/header.php';
 <form method="post" action="edit_product.php?id=<?= $id ?>">
     <input type="hidden" name="update_product" value="1">
     <label>Nom :</label><br>
-    <input type="text" name="name" value="<?= htmlspecialchars($product['name']) ?>" required><br>
+    <input type="text" name="name" value="<?= htmlspecialchars($product['nom']) ?>" required><br>
     <label>Description :</label><br>
     <textarea name="description"><?= htmlspecialchars($product['description']) ?></textarea><br>
     <label>Prix :</label><br>
-    <input type="number" step="0.01" name="price" value="<?= $product['price'] ?>" required><br>
+    <input type="number" step="0.01" name="price" value="<?= $product['prix'] ?>" required><br>
     <label>Catégorie :</label><br>
-    <input type="text" name="category" value="<?= htmlspecialchars($product['category']) ?>"><br>
-    <label>Marque :</label><br>
-    <input type="text" name="brand" value="<?= htmlspecialchars($product['brand']) ?>"><br>
-    <label>Couleur :</label><br>
-    <input type="text" name="color" value="<?= htmlspecialchars($product['color']) ?>"><br>
-    <label>Âge recommandé :</label><br>
-    <input type="text" name="age_recommended" value="<?= htmlspecialchars($product['age_recommended']) ?>"><br>
+    <input type="text" name="category" value="<?= htmlspecialchars($product['categorie']) ?>"><br>
     <label>Image (nom du fichier) :</label><br>
-    <input type="text" name="image" value="<?= htmlspecialchars($product['image']) ?>"><br>
+    <input type="text" name="image" value="<?= isset($product['image']) ? htmlspecialchars($product['image']) : '' ?>"><br>
     <button type="submit">Enregistrer</button>
     <a href="products.php">Retour à la liste</a>
 </form>

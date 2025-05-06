@@ -10,7 +10,7 @@ if (!is_logged_in() || !is_admin()) {
 $message = '';
 if (isset($_GET['delete'])) {
     $id = intval($_GET['delete']);
-    $stmt = $pdo->prepare('DELETE FROM products WHERE id = ?');
+    $stmt = $pdo->prepare('DELETE FROM produits WHERE id = ?');
     if ($stmt->execute([$id])) {
         $message = "Produit supprimé avec succès.";
     } else {
@@ -20,18 +20,15 @@ if (isset($_GET['delete'])) {
 
 // Traitement de l'ajout de produit
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_product'])) {
-    $name = trim($_POST['name']);
+    $nom = trim($_POST['name']);
     $description = trim($_POST['description']);
-    $price = floatval($_POST['price']);
-    $category = trim($_POST['category']);
-    $brand = trim($_POST['brand']);
-    $color = trim($_POST['color']);
-    $age_recommended = trim($_POST['age_recommended']);
-    $image = trim($_POST['image']); // Pour simplifier, on met le nom du fichier image
+    $prix = floatval($_POST['price']);
+    $categorie = trim($_POST['category']);
+    $image = trim($_POST['image']);
 
-    if ($name && $price) {
-        $stmt = $pdo->prepare('INSERT INTO products (name, description, price, category, brand, color, age_recommended, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
-        if ($stmt->execute([$name, $description, $price, $category, $brand, $color, $age_recommended, $image])) {
+    if ($nom && $prix) {
+        $stmt = $pdo->prepare('INSERT INTO produits (nom, description, prix, categorie, image) VALUES (?, ?, ?, ?, ?)');
+        if ($stmt->execute([$nom, $description, $prix, $categorie, $image])) {
             $message = "Produit ajouté avec succès.";
         } else {
             $message = "Erreur lors de l'ajout du produit.";
@@ -42,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_product'])) {
 }
 
 // Récupérer la liste des produits
-$products = $pdo->query('SELECT * FROM products ORDER BY id DESC')->fetchAll();
+$products = $pdo->query('SELECT * FROM produits ORDER BY id DESC')->fetchAll();
 
 include '../includes/header.php';
 ?>
@@ -62,12 +59,6 @@ include '../includes/header.php';
     <input type="number" step="0.01" name="price" required><br>
     <label>Catégorie :</label><br>
     <input type="text" name="category"><br>
-    <label>Marque :</label><br>
-    <input type="text" name="brand"><br>
-    <label>Couleur :</label><br>
-    <input type="text" name="color"><br>
-    <label>Âge recommandé :</label><br>
-    <input type="text" name="age_recommended"><br>
     <label>Image (nom du fichier) :</label><br>
     <input type="text" name="image"><br>
     <button type="submit">Ajouter</button>
@@ -80,16 +71,14 @@ include '../includes/header.php';
         <th>Nom</th>
         <th>Prix</th>
         <th>Catégorie</th>
-        <th>Marque</th>
         <th>Actions</th>
     </tr>
     <?php foreach ($products as $prod) : ?>
     <tr>
         <td><?= $prod['id'] ?></td>
-        <td><?= htmlspecialchars($prod['name']) ?></td>
-        <td><?= number_format($prod['price'], 2) ?> €</td>
-        <td><?= htmlspecialchars($prod['category']) ?></td>
-        <td><?= htmlspecialchars($prod['brand']) ?></td>
+        <td><?= htmlspecialchars($prod['nom']) ?></td>
+        <td><?= number_format($prod['prix'], 2) ?> €</td>
+        <td><?= htmlspecialchars($prod['categorie']) ?></td>
         <td>
             <a href="edit_product.php?id=<?= $prod['id'] ?>">Modifier</a> |
             <a href="products.php?delete=<?= $prod['id'] ?>" onclick="return confirm('Supprimer ce produit ?');">Supprimer</a>

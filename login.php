@@ -7,12 +7,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email']);
     $password = $_POST['password'];
     if ($email && $password) {
-        $stmt = $pdo->prepare('SELECT * FROM users WHERE email = ?');
+        $stmt = $pdo->prepare('SELECT * FROM utilisateurs WHERE email = ?');
         $stmt->execute([$email]);
         $user = $stmt->fetch();
-        if ($user && password_verify($password, $user['password'])) {
+        if ($user && password_verify($password, $user['mot_de_passe'])) {
             $_SESSION['user_id'] = $user['id'];
-            $_SESSION['username'] = $user['username'];
+            $_SESSION['username'] = $user['nom'];
             $_SESSION['role'] = $user['role'];
             if ($user['role'] === 'admin') {
                 redirect('admin/dashboard.php');
