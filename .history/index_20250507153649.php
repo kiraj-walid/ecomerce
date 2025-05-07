@@ -58,7 +58,7 @@ $categories = $pdo->query("SELECT DISTINCT categorie FROM produits WHERE categor
                 <div class="product-info">
                     <strong><?= htmlspecialchars($prod['nom']) ?></strong><br>
                     <div class="product-rating">★★★★☆</div>
-                    <span><?= number_format($prod['prix'], 2) ?> MAD</span><br>
+                    <span><?= number_format($prod['prix'], 2) ?> €</span><br>
                     <span class="product-category"><?= htmlspecialchars($prod['categorie']) ?></span><br>
                     <div class="product-desc">
                         <?= htmlspecialchars(mb_strimwidth($prod['description'], 0, 80, '...')) ?>
@@ -73,6 +73,12 @@ $categories = $pdo->query("SELECT DISTINCT categorie FROM produits WHERE categor
     </div>
 <?php endif; ?>
 
+<!-- Promotions Section -->
+<section id="promotions">
+    <h2>Offres Spéciales</h2>
+    <p>Soldes jusqu'à 50% sur les produits sélectionnés</p>
+    <a href="sales-page.php" class="promo-btn">Voir les offres</a>
+</section>
 
 <!-- Footer Section -->
 <?php include 'includes/footer.php'; ?>

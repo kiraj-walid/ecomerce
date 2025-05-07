@@ -10,7 +10,6 @@ $products = $pdo->query('SELECT * FROM produits ORDER BY id DESC LIMIT 8')->fetc
 $categories = $pdo->query("SELECT DISTINCT categorie FROM produits WHERE categorie IS NOT NULL AND categorie != ''")->fetchAll(PDO::FETCH_COLUMN);
 ?>
 
-<!-- Hero Section -->
 <div class="hero-section" style="background-image: url('assets/images/landingpage.webp');">
     <div class="hero-overlay"></div>
     <div class="hero-content">
@@ -27,18 +26,16 @@ $categories = $pdo->query("SELECT DISTINCT categorie FROM produits WHERE categor
     </div>
 </div>
 
-<!-- Category Filters -->
 <?php if (!empty($categories)) : ?>
     <div class="category-filters">
-        <h2>Parcourez nos catégories</h2>
         <?php foreach ($categories as $cat) : ?>
             <a href="search.php?category=<?= urlencode($cat) ?>" class="category-card"><?= htmlspecialchars($cat) ?></a>
         <?php endforeach; ?>
     </div>
 <?php endif; ?>
 
-<!-- Featured Products Section -->
 <h2 class="recent-products-title">Produits récents</h2>
+
 <?php if (count($products) === 0) : ?>
     <p class="no-products">Aucun produit disponible.</p>
 <?php else : ?>
@@ -58,7 +55,7 @@ $categories = $pdo->query("SELECT DISTINCT categorie FROM produits WHERE categor
                 <div class="product-info">
                     <strong><?= htmlspecialchars($prod['nom']) ?></strong><br>
                     <div class="product-rating">★★★★☆</div>
-                    <span><?= number_format($prod['prix'], 2) ?> MAD</span><br>
+                    <span><?= number_format($prod['prix'], 2) ?> €</span><br>
                     <span class="product-category"><?= htmlspecialchars($prod['categorie']) ?></span><br>
                     <div class="product-desc">
                         <?= htmlspecialchars(mb_strimwidth($prod['description'], 0, 80, '...')) ?>
@@ -73,6 +70,4 @@ $categories = $pdo->query("SELECT DISTINCT categorie FROM produits WHERE categor
     </div>
 <?php endif; ?>
 
-
-<!-- Footer Section -->
 <?php include 'includes/footer.php'; ?>

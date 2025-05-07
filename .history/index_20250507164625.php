@@ -73,6 +73,12 @@ $categories = $pdo->query("SELECT DISTINCT categorie FROM produits WHERE categor
     </div>
 <?php endif; ?>
 
+<!-- Promotions Section -->
+<section id="promotions">
+    <h2>Offres Spéciales</h2>
+    <p>Soldes jusqu'à 50% sur les produits sélectionnés</p>
+    <a href="sales-page.php" class="promo-btn">Voir les offres</a>
+</section>
 
 <!-- Footer Section -->
 <?php include 'includes/footer.php'; ?>

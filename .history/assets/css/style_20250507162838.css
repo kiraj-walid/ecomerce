@@ -450,80 +450,136 @@ footer {
 .product-actions .add-to-cart-btn:hover {
     background-color: #e67e22;
 }
-/* Product Detail Page */
-.product-detail-page {
-    padding: 30px;
-    max-width: 1200px;
-    margin: 0 auto;
-}
 
-.product-title {
-    font-size: 2em;
-    margin-bottom: 20px;
-    text-align: center;
-}
-
+/* Main gallery container */
 .product-detail-container {
     display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-    align-items: flex-start; /* Align items to the top */
+    gap: 30px;
 }
 
+/* Product images container */
 .product-images {
-    flex: 1; /* Take up 1 part of the space */
-    max-width: 400px; /* Make image container smaller */
+    flex: 1;
+    width: 100%;
+    position: relative;
+}
+
+/* Gallery wrapper */
+.gallery-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+/* The actual radio buttons, hidden but functional */
+.gallery-radio {
+    display: none;
+}
+
+/* Thumbnail images */
+.gallery-thumbnail {
+    cursor: pointer;
+    padding: 10px;
+}
+
+/* Hide non-selected images */
+.gallery-slide {
+    display: none;
+}
+
+/* When a specific radio button is selected, show the corresponding image */
+.gallery-radio:checked + .gallery-slide {
+    display: block;
+}
+
+/* Image style for the thumbnails */
+.gallery-thumb-img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border: 2px solid #ddd;
+    margin-bottom: 10px;
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Main product image style */
+.gallery-main-image {
+    display: none;
+    width: 100%;
+    max-width: 500px;
+    margin-top: 20px;
 }
 
 .product-image-detail {
     width: 100%;
-    height: auto;
+    object-fit: contain;
     border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.product-info {
-    flex: 2; /* Take up 2 parts of the space */
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+/* Style for selected image */
+.gallery-radio:checked + .gallery-slide .gallery-main-image {
+    display: block;
 }
 
-.product-info h2 {
-    font-size: 1.5em;
-    margin-bottom: 10px;
-}
-
-.product-price {
-    font-size: 1.25em;
-    color: #f39c12;
-    margin-bottom: 15px;
-}
-
-.product-category {
-    font-size: 1em;
-    color: #777;
-    margin-bottom: 10px;
-}
-
-.product-description {
-    font-size: 1em;
-    color: #333;
+/* Main product title */
+.product-title {
+    font-size: 28px;
+    font-weight: bold;
     margin-bottom: 20px;
 }
 
-.product-actions .add-to-cart-btn {
-    background-color: #f39c12;
-    color: #fff;
-    padding: 10px 20px;
+/* Product details section */
+.product-info {
+    flex: 1;
+}
+
+/* Add to cart button */
+.add-to-cart-btn {
+    background-color: #fcb900;
+    padding: 12px 24px;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.add-to-cart-btn:hover {
+    background-color: #ff6f00;
+}
+
+/* Styling for next and previous arrows */
+.gallery-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.gallery-nav a {
+    font-size: 30px;
+    color: #333;
     text-decoration: none;
-    border-radius: 4px;
-    font-weight: bold;
+    background: rgba(255, 255, 255, 0.5);
+    padding: 10px;
+    border-radius: 50%;
+    transition: background 0.3s ease;
 }
 
-.product-actions .add-to-cart-btn:hover {
-    background-color: #e67e22;
+.gallery-nav a:hover {
+    background: rgba(255, 255, 255, 0.8);
 }
 
+/* Adjust gallery wrapper to handle arrows */
+.product-images {
+    position: relative;
+}
+
+/* For hiding navigation when no images */
+.gallery-nav {
+    display: block;
+}
 

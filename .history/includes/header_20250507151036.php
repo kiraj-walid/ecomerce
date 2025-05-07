@@ -9,19 +9,15 @@ require_once __DIR__ . '/functions.php';
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-<nav>
-    <div class="nav-container">
+<nav class="navbar">
+    <div class="navbar-container">
         <a href="#" class="logo">MyShop</a>
         <div class="nav-links">
             <a href="index.php">Home</a>
             <a href="shop.php">Shop</a>
             <a href="cart.php">Cart</a>
-        </div>
-        <div class="auth-links">
-            <a href="login.php" class="sign-in-btn">Sign In</a>
-            <a href="logout.php" class="sign-out-btn">Sign Out</a>
+            <a href="login.php">Login</a>
         </div>
     </div>
 </nav>
-
 <hr> 

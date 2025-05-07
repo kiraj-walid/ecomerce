@@ -526,4 +526,29 @@ footer {
     background-color: #e67e22;
 }
 
+/* Ensure the product gallery has a max width */
+.product-gallery {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    max-width: 100%;
+    overflow: hidden; /* Hide any part of the image that overflows */
+    margin: 0 auto;
+}
+
+.product-gallery img {
+    width: 100%;
+    max-width: 600px; /* You can adjust this value depending on how large you want the image */
+    height: auto;
+    display: block;
+    object-fit: contain; /* Ensures the image keeps its aspect ratio and fits within the container */
+}
+
+/* Optional: For smaller screens, you might want the image to take up more space */
+@media (max-width: 768px) {
+    .product-gallery img {
+        max-width: 100%; /* Allow the image to take full width on smaller screens */
+    }
+}
 

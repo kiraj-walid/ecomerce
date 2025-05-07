@@ -1,0 +1,74 @@
+<?php
+require_once 'includes/db.php';
+require_once 'includes/functions.php';
+include 'includes/header.php';
+
+// Check if product ID is provided
+if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
+    echo "<p class='error-message'>Produit non trouvé.</p>";
+    include 'includes/footer.php';
+    exit;
+}
+
+$productId = intval($_GET['id']);
+
+// Fetch product details
+$stmt = $pdo->prepare('SELECT * FROM produits WHERE id = ?');
+$stmt->execute([$productId]);
+$product = $stmt->fetch();
+
+if (!$product) {
+    echo "<p class='error-message'>Produit non trouvé.</p>";
+    include 'includes/footer.php';
+    exit;
+}
+
+// Fetch product images
+$stmt_imgs = $pdo->prepare('SELECT image FROM images_produit WHERE produit_id = ?');
+$stmt_imgs->execute([$productId]);
+$images = $stmt_imgs->fetchAll(PDO::FETCH_COLUMN);
+?>
+
+<div class="product-detail-page">
+    <h1 class="product-title"><?= htmlspecialchars($product['nom']) ?></h1>
+
+    <div class="product-detail-container">
+        <div class="product-images">
+            <div class="image-gallery">
+                <?php if ($images && count($images) > 0): ?>
+                    <div class="gallery-wrapper">
+                        <?php foreach ($images as $index => $img): ?>
+                            <input type="radio" name="gallery" id="img-<?= $index ?>" <?= $index === 0 ? 'checked' : '' ?> class="gallery-radio">
+                            <div class="gallery-slide">
+                                <label for="img-<?= $index ?>" class="gallery-thumbnail">
+                                    <img src="assets/images/<?= htmlspecialchars($img) ?>" alt="Image <?= $index + 1 ?>" class="gallery-thumb-img">
+                                </label>
+                                <img src="assets/images/<?= htmlspecialchars($img) ?>" alt="Image <?= $index + 1 ?>" class="product-image-detail">
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php else: ?>
+                    <div class="product-image-wrapper">
+                        <img src="assets/images/default.png" alt="Image par défaut" class="product-image-detail">
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <div class="product-info">
+            <h2><?= htmlspecialchars($product['nom']) ?></h2>
+            <p class="product-price">Prix : <?= number_format($product['prix'], 2) ?> €</p>
+            <p class="product-category">Catégorie : <?= htmlspecialchars($product['categorie']) ?></p>
+            <p class="product-description">Description : <?= htmlspecialchars($product['description']) ?></p>
+
+            <form action="cart.php" method="GET" class="add-to-cart-form">
+                <input type="hidden" name="add" value="<?= $product['id'] ?>">
+                <label for="quantity">Quantité :</label>
+                <input type="number" name="quantity" value="1" min="1" max="99" class="quantity-input">
+                <button type="submit" class="add-to-cart-btn">Ajouter au panier</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<?php include 'includes/footer.php'; ?>

@@ -51,40 +51,8 @@ include 'includes/header.php';
     </select>
     <button type="submit">Rechercher</button>
 </form>
-<div class="product-grid">
-    <?php if (count($products) === 0) : ?>
-        <p>Aucun produit trouvé.</p>
-    <?php else : ?>
-        <?php foreach ($products as $prod) : ?>
-            <div class="product-card">
-                <div class="product-image">
-                    <?php
-                    $stmt_imgs = $pdo->prepare('SELECT image FROM images_produit WHERE produit_id = ?');
-                    $stmt_imgs->execute([$prod['id']]);
-                    $images = $stmt_imgs->fetchAll(PDO::FETCH_COLUMN);
-                    ?>
-                    <div class="product-gallery" style="text-align:center; position:relative;">
-                        <?php if ($images && count($images) > 0): ?>
-                            <span onclick="prevImgSearch(<?= $prod['id'] ?>)" style="cursor:pointer; position:absolute; left:0; top:50%; transform:translateY(-50%); font-size:18px; color:#333; padding:2px 6px; z-index:2;">
-                                <svg width="20" height="20" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </span>
-                            <img src="assets/images/<?= htmlspecialchars($images[0]) ?>" alt="<?= htmlspecialchars($prod['nom']) ?>" style="max-width:80px; max-height:60px; margin-bottom:2px;" id="main-img-<?= $prod['id'] ?>-search">
-                            <span onclick="nextImgSearch(<?= $prod['id'] ?>)" style="cursor:pointer; position:absolute; right:0; top:50%; transform:translateY(-50%); font-size:18px; color:#333; padding:2px 6px; z-index:2;">
-                                <svg width="20" height="20" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </span>
-                        <?php endif; ?>
-                    </div>
-                </div>
-                <h3><?= htmlspecialchars($prod['nom']) ?></h3>
-                <p class="product-price"><?= number_format($prod['prix'], 2) ?> €</p>
-                <p class="product-category"><?= htmlspecialchars($prod['categorie']) ?></p>
-                <a href="cart.php?add=<?= $prod['id'] ?>" class="add-to-cart-btn">Ajouter au panier</a>
-            </div>
-        <?php endforeach; ?>
-    <?php endif; ?>
-</div>
 
-<!-- <?php if (count($products) === 0) : ?>
+<?php if (count($products) === 0) : ?>
     <p>Aucun produit trouvé.</p>
 <?php else : ?>
     <table border="1" cellpadding="5" cellspacing="0">
@@ -139,5 +107,5 @@ include 'includes/header.php';
         </tr>
         <?php endforeach; ?>
     </table>
-<?php endif; ?> -->
+<?php endif; ?>
 <?php include 'includes/footer.php'; ?> 
