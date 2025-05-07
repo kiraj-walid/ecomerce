@@ -41,19 +41,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user'])) {
     }
 }
 
-include '../includes/header.php';
+include '../includes/admin_header.php';
 ?>
-<h2>Modifier un client</h2>
-<?php if (!empty($message)) : ?>
-    <div style="color: green; margin-bottom: 10px;"> <?= $message ?> </div>
-<?php endif; ?>
-<form method="post" action="edit_user.php?id=<?= $id ?>">
-    <input type="hidden" name="update_user" value="1">
-    <label>Nom d'utilisateur :</label><br>
-    <input type="text" name="username" value="<?= htmlspecialchars($user['nom']) ?>" required><br>
-    <label>Email :</label><br>
-    <input type="email" name="email" value="<?= htmlspecialchars($user['email']) ?>" required><br>
-    <button type="submit">Enregistrer</button>
-    <a href="users.php">Retour à la liste</a>
-</form>
-<?php include '../includes/footer.php'; ?> 
+<div class="admin-container">
+    <h2>Modifier un client</h2>
+    <?php if (!empty($message)) : ?>
+        <div class="admin-message <?= strpos($message, 'succès') !== false ? 'success' : 'error' ?>">
+            <?= $message ?>
+        </div>
+    <?php endif; ?>
+    <form method="post" action="edit_user.php?id=<?= $id ?>" class="admin-form-block admin-form">
+        <input type="hidden" name="update_user" value="1">
+        <label>Nom d'utilisateur :</label>
+        <input type="text" name="username" value="<?= htmlspecialchars($user['nom']) ?>" required>
+        <label>Email :</label>
+        <input type="email" name="email" value="<?= htmlspecialchars($user['email']) ?>" required>
+        <br>
+        <br>
+        <button type="submit" class="button-admin">Enregistrer</button>
+        <a href="users.php" class="button-admin button-admin-small button-admin-back">Retour à la liste</a>
+    </form>
+</div>
+</body>
+</html> 

@@ -52,49 +52,71 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_product'])) {
 // Récupérer la liste des produits
 $products = $pdo->query('SELECT * FROM produits ORDER BY id DESC')->fetchAll();
 
-include '../includes/header.php';
+include '../includes/admin_header.php';
+
+// Préparation des filtres de recherche
+$search_name = isset($_GET['search_name']) ? trim($_GET['search_name']) : '';
+$search_cat = isset($_GET['search_cat']) ? trim($_GET['search_cat']) : '';
+
+// Récupérer toutes les catégories distinctes
+$categories = $pdo->query('SELECT DISTINCT categorie FROM produits WHERE categorie IS NOT NULL AND categorie != ""')->fetchAll(PDO::FETCH_COLUMN);
+
+// Filtrage des produits
+$filtered_products = array_filter($products, function($prod) use ($search_name, $search_cat) {
+    $match_name = $search_name === '' || stripos($prod['nom'], $search_name) !== false;
+    $match_cat = $search_cat === '' || $prod['categorie'] === $search_cat;
+    return $match_name && $match_cat;
+});
 ?>
-<h2>Gestion des Produits</h2>
-<?php if (!empty($message)) : ?>
-    <div style="color: green; margin-bottom: 10px;"> <?= $message ?> </div>
-<?php endif; ?>
-
-<h3>Ajouter un produit</h3>
-<form method="post" action="products.php">
-    <input type="hidden" name="add_product" value="1">
-    <label>Nom :</label><br>
-    <input type="text" name="name" required><br>
-    <label>Description :</label><br>
-    <textarea name="description"></textarea><br>
-    <label>Prix :</label><br>
-    <input type="number" step="0.01" name="price" required><br>
-    <label>Catégorie :</label><br>
-    <input type="text" name="category"><br>
-    <label>Images (fichiers séparés par des virgules) :</label><br>
-    <input type="text" name="images" placeholder="ex: img1.jpg, img2.png"><br>
-    <button type="submit">Ajouter</button>
-</form>
-
-<h3>Liste des produits</h3>
-<table border="1" cellpadding="5" cellspacing="0">
-    <tr>
-        <th>ID</th>
-        <th>Nom</th>
-        <th>Prix</th>
-        <th>Catégorie</th>
-        <th>Actions</th>
-    </tr>
-    <?php foreach ($products as $prod) : ?>
-    <tr>
-        <td><?= $prod['id'] ?></td>
-        <td><?= htmlspecialchars($prod['nom']) ?></td>
-        <td><?= number_format($prod['prix'], 2) ?> €</td>
-        <td><?= htmlspecialchars($prod['categorie']) ?></td>
-        <td>
-            <a href="edit_product.php?id=<?= $prod['id'] ?>">Modifier</a> |
-            <a href="products.php?delete=<?= $prod['id'] ?>" onclick="return confirm('Supprimer ce produit ?');">Supprimer</a>
-        </td>
-    </tr>
-    <?php endforeach; ?>
-</table>
-<?php include '../includes/footer.php'; ?> 
+<div class="admin-container">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+        <h2 style="margin-bottom:0;">Liste des produits</h2>
+        <a href="add_product.php" class="button-admin">Ajouter un produit</a>
+    </div>
+    <form method="get" action="products.php" style="margin:18px 0 32px 0;display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
+        <input type="text" name="search_name" placeholder="Nom du produit..." value="<?= htmlspecialchars($search_name) ?>" style="padding:8px 10px;border-radius:4px;border:1px solid #e1e4ea;">
+        <select name="search_cat" style="padding:8px 10px;border-radius:4px;border:1px solid #e1e4ea;">
+            <option value="">Toutes catégories</option>
+            <?php foreach ($categories as $cat): ?>
+                <option value="<?= htmlspecialchars($cat) ?>" <?= $search_cat === $cat ? 'selected' : '' ?>><?= htmlspecialchars($cat) ?></option>
+            <?php endforeach; ?>
+        </select>
+        <button type="submit" class="button-admin button-admin-small">Rechercher</button>
+    </form>
+    <div class="admin-table-responsive">
+        <table class="admin-table">
+            <tr>
+                <!-- <th>ID</th> -->
+                <th>Image</th>
+                <th>Nom</th>
+                <th>Prix</th>
+                <th>Catégorie</th>
+                <th>Actions</th>
+            </tr>
+            <?php foreach ($filtered_products as $prod) :
+                // Récupérer la première image du produit
+                $stmt_img = $pdo->prepare('SELECT image FROM images_produit WHERE produit_id = ? LIMIT 1');
+                $stmt_img->execute([$prod['id']]);
+                $img = $stmt_img->fetchColumn();
+                $img_url = $img ? '../assets/images/' . htmlspecialchars($img) : 'https://via.placeholder.com/56x56?text=Image';
+            ?>
+            <tr>
+                <!-- <td><?= $prod['id'] ?></td> -->
+                <td><img src="<?= $img_url ?>" alt="Image produit"></td>
+                <td><?= htmlspecialchars($prod['nom']) ?></td>
+                <td><?= number_format($prod['prix'], 2) ?> €</td>
+                <td><?= htmlspecialchars($prod['categorie']) ?></td>
+                <td>
+                    <div class="admin-actions">
+                        <a href="edit_product.php?id=<?= $prod['id'] ?>" class="button-admin button-admin-small">Modifier</a>
+                        <a href="products.php?delete=<?= $prod['id'] ?>" class="button-admin button-admin-small button-admin-danger" onclick="return confirm('Supprimer ce produit ?');">Supprimer</a>
+                    </div>
+                </td>
+            </tr>
+            <?php endforeach; ?>
+        </table>
+    </div>
+    <a href="dashboard.php" class="button-admin" style="margin-top:32px;">Retour au tableau de bord</a>
+</div>
+</body>
+</html> 

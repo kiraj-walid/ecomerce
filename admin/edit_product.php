@@ -62,25 +62,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_product'])) {
     }
 }
 
-include '../includes/header.php';
+include '../includes/admin_header.php';
 ?>
-<h2>Modifier un produit</h2>
-<?php if (!empty($message)) : ?>
-    <div style="color: green; margin-bottom: 10px;"> <?= $message ?> </div>
-<?php endif; ?>
-<form method="post" action="edit_product.php?id=<?= $id ?>">
-    <input type="hidden" name="update_product" value="1">
-    <label>Nom :</label><br>
-    <input type="text" name="name" value="<?= htmlspecialchars($product['nom']) ?>" required><br>
-    <label>Description :</label><br>
-    <textarea name="description"><?= htmlspecialchars($product['description']) ?></textarea><br>
-    <label>Prix :</label><br>
-    <input type="number" step="0.01" name="price" value="<?= $product['prix'] ?>" required><br>
-    <label>Catégorie :</label><br>
-    <input type="text" name="category" value="<?= htmlspecialchars($product['categorie']) ?>"><br>
-    <label>Images (fichiers séparés par des virgules) :</label><br>
-    <input type="text" name="images" value="<?= htmlspecialchars($image_list) ?>" placeholder="ex: img1.jpg, img2.png"><br>
-    <button type="submit">Enregistrer</button>
-    <a href="products.php">Retour à la liste</a>
-</form>
-<?php include '../includes/footer.php'; ?> 
+<div class="admin-container">
+    <h2>Modifier un produit</h2>
+    <?php if (!empty($message)) : ?>
+        <div class="admin-message <?= strpos($message, 'succès') !== false ? 'success' : 'error' ?>">
+            <?= $message ?>
+        </div>
+    <?php endif; ?>
+    <form method="post" action="edit_product.php?id=<?= $id ?>" class="admin-form-block admin-form">
+        <input type="hidden" name="update_product" value="1">
+        <label>Nom :</label>
+        <input type="text" name="name" value="<?= htmlspecialchars($product['nom']) ?>" required>
+        <label>Description :</label>
+        <textarea name="description" rows="2"><?= htmlspecialchars($product['description']) ?></textarea>
+        <label>Prix :</label>
+        <input type="number" step="0.01" name="price" value="<?= $product['prix'] ?>" required>
+        <label>Catégorie :</label>
+        <input type="text" name="category" value="<?= htmlspecialchars($product['categorie']) ?>">
+        <label>Images (fichiers séparés par des virgules) :</label>
+        <input type="text" name="images" value="<?= htmlspecialchars($image_list) ?>" placeholder="ex: img1.jpg, img2.png">
+        <button type="submit" class="button-admin">Enregistrer</button>
+        <a href="products.php" class="button-admin button-admin-small button-admin-back">Retour à la liste</a>
+    </form>
+</div>
+</body>
+</html> 

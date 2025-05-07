@@ -30,18 +30,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 include 'includes/header.php';
 ?>
-<?php if (!empty($message)) : ?>
-    <div style="color: red; margin-bottom: 10px;"> <?= $message ?> </div>
-<?php endif; ?>
-<h2>Inscription</h2>
-<form method="post" action="register.php">
-    <label>Nom d'utilisateur :</label><br>
-    <input type="text" name="username" required><br>
-    <label>Email :</label><br>
-    <input type="email" name="email" required><br>
-    <label>Mot de passe :</label><br>
-    <input type="password" name="password" required><br>
-    <button type="submit">S'inscrire</button>
-</form>
-<p>Déjà inscrit ? <a href="login.php">Se connecter</a></p>
+<div class="auth-container">
+    <div class="auth-title">Inscription</div>
+    <?php if (!empty($message)) : ?>
+        <div class="auth-message <?= strpos($message, 'réussie') !== false ? 'success' : 'error' ?>">
+            <?= $message ?>
+        </div>
+    <?php endif; ?>
+    <form method="post" action="register.php" class="auth-form">
+        <label>Nom d'utilisateur :</label>
+        <input type="text" name="username" required>
+        <label>Email :</label>
+        <input type="email" name="email" required>
+        <label>Mot de passe :</label>
+        <input type="password" name="password" required>
+        <button type="submit">S'inscrire</button>
+    </form>
+    <a href="login.php" class="auth-link">Déjà inscrit ? Se connecter</a>
+</div>
 <?php include 'includes/footer.php'; ?> 
