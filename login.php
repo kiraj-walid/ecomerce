@@ -29,16 +29,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 include 'includes/header.php';
 ?>
-<h2>Connexion</h2>
-<?php if (!empty($message)) : ?>
-    <div style="color: red; margin-bottom: 10px;"> <?= $message ?> </div>
-<?php endif; ?>
-<form method="post" action="login.php">
-    <label>Email :</label><br>
-    <input type="email" name="email" required><br>
-    <label>Mot de passe :</label><br>
-    <input type="password" name="password" required><br>
-    <button type="submit">Se connecter</button>
-</form>
-<p>Pas encore inscrit ? <a href="register.php">Créer un compte</a></p>
+<div class="auth-container">
+    <div class="auth-title">Connexion</div>
+    <?php if (!empty($message)) : ?>
+        <div class="auth-message <?= strpos($message, 'incorrect') === false ? 'success' : 'error' ?>">
+            <?= $message ?>
+        </div>
+    <?php endif; ?>
+    <form method="post" action="login.php" class="auth-form">
+        <label>Email :</label>
+        <input type="email" name="email" required>
+        <label>Mot de passe :</label>
+        <input type="password" name="password" required>
+        <button type="submit">Se connecter</button>
+    </form>
+    <a href="register.php" class="auth-link">Pas encore inscrit ? Créer un compte</a>
+</div>
 <?php include 'includes/footer.php'; ?> 

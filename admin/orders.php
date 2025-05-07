@@ -24,8 +24,9 @@ if (isset($_POST['update_status']) && isset($_POST['order_id']) && isset($_POST[
 // Récupérer toutes les commandes
 $orders = $pdo->query('SELECT commandes.*, utilisateurs.nom as client_nom FROM commandes JOIN utilisateurs ON commandes.utilisateur_id = utilisateurs.id ORDER BY date_commande DESC')->fetchAll();
 
-include '../includes/header.php';
+include '../includes/admin_header.php';
 ?>
+<div class="admin-container">
 <h2>Gestion des Commandes</h2>
 <?php if (!empty($message)) : ?>
     <div style="color: green; margin-bottom: 10px;"> <?= $message ?> </div>
@@ -34,7 +35,7 @@ include '../includes/header.php';
     <p>Aucune commande trouvée.</p>
 <?php else : ?>
     <?php foreach ($orders as $order) : ?>
-        <div style="border:1px solid #ccc; margin-bottom:20px; padding:10px;">
+        <div style="border:1px solid #e1e4ea; margin-bottom:20px; padding:10px; border-radius:6px; background:#f9fbfd;">
             <strong>Commande n°<?= $order['id'] ?></strong> du <?= $order['date_commande'] ?><br>
             Client : <?= htmlspecialchars($order['client_nom']) ?><br>
             Statut : <strong><?= htmlspecialchars($order['statut']) ?></strong> |
@@ -47,7 +48,7 @@ include '../includes/header.php';
                     <option value="livree" <?= $order['statut']=='livree'?'selected':'' ?>>Livrée</option>
                     <option value="annulee" <?= $order['statut']=='annulee'?'selected':'' ?>>Annulée</option>
                 </select>
-                <button type="submit" name="update_status">Changer le statut</button>
+                <button type="submit" name="update_status" class="button-admin">Changer le statut</button>
             </form>
             <u>Produits commandés :</u>
             <ul>
@@ -66,5 +67,7 @@ include '../includes/header.php';
         </div>
     <?php endforeach; ?>
 <?php endif; ?>
-<a href="dashboard.php">Retour au tableau de bord</a>
-<?php include '../includes/footer.php'; ?> 
+<a href="dashboard.php" class="button-admin" style="margin-top:32px;">Retour au tableau de bord</a>
+</div>
+</body>
+</html> 
