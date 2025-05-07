@@ -5,32 +5,51 @@ include 'includes/header.php';
 
 // Récupérer les 8 derniers produits
 $products = $pdo->query('SELECT * FROM produits ORDER BY id DESC LIMIT 8')->fetchAll();
+
+// Fetch categories for quick filters
+$categories = $pdo->query("SELECT DISTINCT categorie FROM produits WHERE categorie IS NOT NULL AND categorie != ''")->fetchAll(PDO::FETCH_COLUMN);
 ?>
-<h1>Bienvenue sur la Boutique en Ligne</h1>
-<p>
-    <a href="search.php">Rechercher un produit</a> |
-    <a href="cart.php">Voir mon panier</a> |
-    <a href="profile.php">Mon profil</a>
-</p>
-<h2>Produits récents</h2>
+<div class="hero-section">
+    <img src="assets/images/landingpage.webp" alt="Boutique en Ligne" class="hero-bg-img">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <div class="hero-text">
+            <h1>Bienvenue sur la Boutique en Ligne</h1>
+            <p>Découvrez les dernières tendances, trouvez vos produits préférés et profitez d'une expérience d'achat moderne et sécurisée.</p>
+            <form class="hero-search" method="get" action="search.php">
+                <input type="text" name="keyword" placeholder="Rechercher un produit...">
+                <button type="submit" class="hero-btn">Rechercher</button>
+            </form>
+            <a href="search.php" class="hero-btn">Voir tous les produits</a>
+        </div>
+    </div>
+</div>
+<?php if (!empty($categories)) : ?>
+<div class="category-filters">
+    <?php foreach ($categories as $cat) : ?>
+        <a href="search.php?category=<?= urlencode($cat) ?>" class="category-card"><?= htmlspecialchars($cat) ?></a>
+    <?php endforeach; ?>
+</div>
+<?php endif; ?>
+<h2 class="recent-products-title">Produits récents</h2>
 <?php if (count($products) === 0) : ?>
-    <p>Aucun produit disponible.</p>
+    <p class="no-products">Aucun produit disponible.</p>
 <?php else : ?>
-    <div style="display:flex; flex-wrap:wrap; gap:20px;">
+    <div class="product-listing">
     <?php foreach ($products as $prod) : ?>
-        <div style="border:1px solid #ccc; padding:10px; width:220px; background:#fff;">
+        <div class="product-card">
             <?php
             $stmt_imgs = $pdo->prepare('SELECT image FROM images_produit WHERE produit_id = ?');
             $stmt_imgs->execute([$prod['id']]);
             $images = $stmt_imgs->fetchAll(PDO::FETCH_COLUMN);
             ?>
-            <div class="product-gallery" style="text-align:center; position:relative;">
+            <div class="product-gallery">
                 <?php if ($images && count($images) > 0): ?>
-                    <span onclick="prevImg(<?= $prod['id'] ?>)" style="cursor:pointer; position:absolute; left:0; top:50%; transform:translateY(-50%); font-size:22px; color:#333; padding:2px 6px; z-index:2;">
+                    <span onclick="prevImg(<?= $prod['id'] ?>)" class="gallery-arrow gallery-arrow-left">
                         <svg width="24" height="24" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </span>
-                    <img src="assets/images/<?= htmlspecialchars($images[0]) ?>" alt="<?= htmlspecialchars($prod['nom']) ?>" style="max-width:200px; max-height:120px; margin-bottom:4px;" id="main-img-<?= $prod['id'] ?>">
-                    <span onclick="nextImg(<?= $prod['id'] ?>)" style="cursor:pointer; position:absolute; right:0; top:50%; transform:translateY(-50%); font-size:22px; color:#333; padding:2px 6px; z-index:2;">
+                    <img src="assets/images/<?= htmlspecialchars($images[0]) ?>" alt="<?= htmlspecialchars($prod['nom']) ?>" id="main-img-<?= $prod['id'] ?>">
+                    <span onclick="nextImg(<?= $prod['id'] ?>)" class="gallery-arrow gallery-arrow-right">
                         <svg width="24" height="24" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </span>
                     <?php if (count($images) > 1): ?>
@@ -54,9 +73,14 @@ $products = $pdo->query('SELECT * FROM produits ORDER BY id DESC LIMIT 8')->fetc
                 <?php endif; ?>
             </div>
             <strong><?= htmlspecialchars($prod['nom']) ?></strong><br>
+            <div class="product-rating">★★★★☆</div>
             <span><?= number_format($prod['prix'], 2) ?> €</span><br>
             <span><?= htmlspecialchars($prod['categorie']) ?></span><br>
-            <a href="cart.php?add=<?= $prod['id'] ?>">Ajouter au panier</a>
+            <div class="product-desc">
+                <?= htmlspecialchars(mb_strimwidth($prod['description'], 0, 80, '...')) ?>
+            </div>
+            <a href="cart.php?add=<?= $prod['id'] ?>" class="add-to-cart-btn">Ajouter au panier</a>
+            <a href="product.php?id=<?= $prod['id'] ?>" class="product-details-btn">Voir le produit</a>
         </div>
     <?php endforeach; ?>
     </div>
