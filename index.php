@@ -31,9 +31,16 @@ $categories = $pdo->query("SELECT DISTINCT categorie FROM produits WHERE categor
 <?php if (!empty($categories)) : ?>
     <div class="category-filters">
         <h2>Parcourez nos catégories</h2>
+        <div class="category-grid">
         <?php foreach ($categories as $cat) : ?>
-            <a href="search.php?category=<?= urlencode($cat) ?>" class="category-card"><?= htmlspecialchars($cat) ?></a>
+            <a href="search.php?category=<?= urlencode($cat) ?>" class="category-card">
+                <div class="category-icon">
+                    <i class="fas fa-tags"></i>
+                </div>
+                <span class="category-name"><?= htmlspecialchars($cat) ?></span>
+            </a>
         <?php endforeach; ?>
+        </div>
     </div>
 <?php endif; ?>
 
@@ -61,13 +68,14 @@ $categories = $pdo->query("SELECT DISTINCT categorie FROM produits WHERE categor
                     <span><?= number_format($prod['prix'], 2) ?> MAD</span><br>
                     <span class="product-category"><?= htmlspecialchars($prod['categorie']) ?></span><br>
                     <div class="product-desc">
-                        <?= htmlspecialchars(mb_strimwidth($prod['description'], 0, 80, '...')) ?>
+                        <?= htmlspecialchars(mb_strimwidth($prod['description'], 0, 150, '...')) ?>
                     </div>
-                    <div class="product-actions">
+                 
+                </div>
+                <div class="product-actions">
                         <a href="cart.php?add=<?= $prod['id'] ?>" class="add-to-cart-btn">Ajouter au panier</a>
                         <a href="product.php?id=<?= $prod['id'] ?>" class="product-details-btn">Voir le produit</a>
                     </div>
-                </div>
             </div>
         <?php endforeach; ?>
     </div>
