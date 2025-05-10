@@ -49,39 +49,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['place_order'])) {
 
 include 'includes/header.php';
 ?>
-<h2>Finaliser la commande</h2>
-<?php if (!empty($message)) : ?>
-    <div style="color: green; margin-bottom: 10px;"> <?= $message ?> </div>
-<?php endif; ?>
-<?php if (count($cart_items) > 0) : ?>
-<table border="1" cellpadding="5" cellspacing="0">
-    <tr>
-        <th>Produit</th>
-        <th>Prix</th>
-        <th>Quantité</th>
-        <th>Total</th>
-    </tr>
-    <?php foreach ($cart_items as $item) : ?>
-    <tr>
-        <td><?= htmlspecialchars($item['nom']) ?></td>
-        <td><?= number_format($item['prix'], 2) ?> €</td>
-        <td><?= $item['quantite'] ?></td>
-        <td><?= number_format($item['prix'] * $item['quantite'], 2) ?> €</td>
-    </tr>
-    <?php endforeach; ?>
-</table>
-<p><strong>Total à payer : <?= number_format($total, 2) ?> €</strong></p>
-<form method="post" action="order.php">
-    <label>Mode de paiement :</label><br>
-    <select name="payment_method" required>
-        <option value="">--Choisir--</option>
-        <option value="livraison">Paiement à la livraison</option>
-        <option value="carte">Carte bancaire</option>
-    </select><br><br>
-    <button type="submit" name="place_order">Valider la commande</button>
-</form>
-<?php else : ?>
-<p>Votre commande a été enregistrée. <a href="orders.php">Voir mes commandes</a></p>
-<?php endif; ?>
-<a href="cart.php">Retour au panier</a>
+<div class="order-container">
+    <h2 class="order-title">Finaliser la commande</h2>
+    <?php if (!empty($message)) : ?>
+        <div class="order-message"><?= $message ?></div>
+    <?php endif; ?>
+    <?php if (count($cart_items) > 0) : ?>
+        <table class="order-table">
+            <tr>
+                <th>Produit</th>
+                <th>Prix</th>
+                <th>Quantité</th>
+                <th>Total</th>
+            </tr>
+            <?php foreach ($cart_items as $item) : ?>
+            <tr>
+                <td><?= htmlspecialchars($item['nom']) ?></td>
+                <td><?= number_format($item['prix'], 2) ?> €</td>
+                <td><?= $item['quantite'] ?></td>
+                <td><?= number_format($item['prix'] * $item['quantite'], 2) ?> €</td>
+            </tr>
+            <?php endforeach; ?>
+        </table>
+        <p class="order-total">Total à payer : <?= number_format($total, 2) ?> €</p>
+        <form method="post" action="order.php" class="order-form">
+            <label>Mode de paiement :</label>
+            <select name="payment_method" required>
+                <option value="">--Choisir--</option>
+                <option value="livraison">Paiement à la livraison</option>
+                <option value="carte">Carte bancaire</option>
+            </select>
+            <button type="submit" name="place_order" class="order-submit-btn">Valider la commande</button>
+        </form>
+    <?php else : ?>
+        <div class="order-success">
+            <p>Votre commande a été enregistrée.</p>
+            <a href="orders.php">Voir mes commandes</a>
+        </div>
+    <?php endif; ?>
+    <div class="order-links">
+        <a href="cart.php" class="order-link">Retour au panier</a>
+    </div>
+</div>
 <?php include 'includes/footer.php'; ?> 

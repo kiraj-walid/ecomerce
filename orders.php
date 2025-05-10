@@ -15,30 +15,44 @@ $orders = $stmt->fetchAll();
 
 include 'includes/header.php';
 ?>
-<h2>Mes Commandes</h2>
-<?php if (count($orders) === 0) : ?>
-    <p>Vous n'avez pas encore passé de commande.</p>
-<?php else : ?>
-    <?php foreach ($orders as $order) : ?>
-        <div style="border:1px solid #ccc; margin-bottom:20px; padding:10px;">
-            <strong>Commande n°<?= $order['id'] ?></strong> du <?= $order['date_commande'] ?><br>
-            Statut : <?= htmlspecialchars($order['statut']) ?> | Paiement : <?= htmlspecialchars($order['mode_paiement']) ?><br>
-            <u>Produits commandés :</u>
-            <ul>
-            <?php
-            $stmt_items = $pdo->prepare('SELECT lignes_commande.*, produits.nom, produits.prix FROM lignes_commande JOIN produits ON lignes_commande.produit_id = produits.id WHERE lignes_commande.commande_id = ?');
-            $stmt_items->execute([$order['id']]);
-            $items = $stmt_items->fetchAll();
-            $total = 0;
-            foreach ($items as $item) :
-                $total += $item['prix'] * $item['quantite'];
-            ?>
-                <li><?= htmlspecialchars($item['nom']) ?> x <?= $item['quantite'] ?> (<?= number_format($item['prix'], 2) ?> €)</li>
-            <?php endforeach; ?>
-            </ul>
-            Total : <strong><?= number_format($total, 2) ?> €</strong>
-        </div>
-    <?php endforeach; ?>
-<?php endif; ?>
-<a href="index.php">Retour à l'accueil</a>
+<div class="orders-container">
+    <h2 class="orders-title">Mes Commandes</h2>
+    <?php if (count($orders) === 0) : ?>
+        <p class="orders-empty">Vous n'avez pas encore passé de commande.</p>
+    <?php else : ?>
+        <?php foreach ($orders as $order) : ?>
+            <div class="order-card">
+                <div class="order-header">
+                    <div class="order-number">Commande n°<?= $order['id'] ?></div>
+                    <div class="order-date"><?= $order['date_commande'] ?></div>
+                    <div class="order-status"><?= htmlspecialchars($order['statut']) ?></div>
+                    <div class="order-payment">Paiement : <?= htmlspecialchars($order['mode_paiement']) ?></div>
+                </div>
+                <div class="order-content">
+                    <h3 class="order-products-title">Produits commandés</h3>
+                    <ul class="order-products-list">
+                    <?php
+                    $stmt_items = $pdo->prepare('SELECT lignes_commande.*, produits.nom, produits.prix FROM lignes_commande JOIN produits ON lignes_commande.produit_id = produits.id WHERE lignes_commande.commande_id = ?');
+                    $stmt_items->execute([$order['id']]);
+                    $items = $stmt_items->fetchAll();
+                    $total = 0;
+                    foreach ($items as $item) :
+                        $total += $item['prix'] * $item['quantite'];
+                    ?>
+                        <li class="order-product-item">
+                            <span class="order-product-name"><?= htmlspecialchars($item['nom']) ?></span>
+                            <span class="order-product-quantity">x <?= $item['quantite'] ?></span>
+                            <span class="order-product-price"><?= number_format($item['prix'], 2) ?> €</span>
+                        </li>
+                    <?php endforeach; ?>
+                    </ul>
+                    <div class="order-total">
+                        Total : <?= number_format($total, 2) ?> €
+                    </div>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    <?php endif; ?>
+    <a href="index.php" class="orders-back-link">Retour à l'accueil</a>
+</div>
 <?php include 'includes/footer.php'; ?> 

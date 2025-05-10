@@ -54,35 +54,41 @@ foreach ($cart_items as $item) {
 
 include 'includes/header.php';
 ?>
-<h2>Mon Panier</h2>
-<?php if (!empty($message)) : ?>
-    <div style="color: green; margin-bottom: 10px;"> <?= $message ?> </div>
-<?php endif; ?>
-<?php if (count($cart_items) === 0) : ?>
-    <p>Votre panier est vide.</p>
-<?php else : ?>
-<form method="post" action="cart.php">
-<table border="1" cellpadding="5" cellspacing="0">
-    <tr>
-        <th>Produit</th>
-        <th>Prix</th>
-        <th>Quantité</th>
-        <th>Total</th>
-        <th>Action</th>
-    </tr>
-    <?php foreach ($cart_items as $item) : ?>
-    <tr>
-        <td><?= htmlspecialchars($item['nom']) ?></td>
-        <td><?= number_format($item['prix'], 2) ?> €</td>
-        <td><input type="number" name="qty[<?= $item['panier_id'] ?>]" value="<?= $item['quantite'] ?>" min="1"></td>
-        <td><?= number_format($item['prix'] * $item['quantite'], 2) ?> €</td>
-        <td><a href="cart.php?delete=<?= $item['panier_id'] ?>" onclick="return confirm('Supprimer ce produit ?');">Supprimer</a></td>
-    </tr>
-    <?php endforeach; ?>
-</table>
-<button type="submit" name="update_qty">Mettre à jour les quantités</button>
-</form>
-<p><strong>Total : <?= number_format($total, 2) ?> €</strong></p>
-<a href="order.php">Finaliser la commande</a>
-<?php endif; ?>
+<div class="cart-container">
+    <h2 class="cart-title">Mon Panier</h2>
+    <?php if (!empty($message)) : ?>
+        <div class="cart-message"><?= $message ?></div>
+    <?php endif; ?>
+    <?php if (count($cart_items) === 0) : ?>
+        <p class="cart-empty">Votre panier est vide.</p>
+    <?php else : ?>
+    <form method="post" action="cart.php">
+        <table class="cart-table">
+            <tr>
+                <th>Produit</th>
+                <th>Prix</th>
+                <th>Quantité</th>
+                <th>Total</th>
+                <th>Action</th>
+            </tr>
+            <?php foreach ($cart_items as $item) : ?>
+            <tr>
+                <td><?= htmlspecialchars($item['nom']) ?></td>
+                <td><?= number_format($item['prix'], 2) ?> €</td>
+                <td><input type="number" name="qty[<?= $item['panier_id'] ?>]" value="<?= $item['quantite'] ?>" min="1"></td>
+                <td><?= number_format($item['prix'] * $item['quantite'], 2) ?> €</td>
+                <td><a href="cart.php?delete=<?= $item['panier_id'] ?>" class="delete-link" onclick="return confirm('Supprimer ce produit ?');">Supprimer</a></td>
+            </tr>
+            <?php endforeach; ?>
+        </table>
+        <div class="cart-actions">
+            <button type="submit" name="update_qty" class="cart-update-btn">Mettre à jour les quantités</button>
+            <div>
+                <p class="cart-total">Total : <?= number_format($total, 2) ?> €</p>
+                <a href="order.php" class="cart-checkout-btn">Finaliser la commande</a>
+            </div>
+        </div>
+    </form>
+    <?php endif; ?>
+</div>
 <?php include 'includes/footer.php'; ?> 
