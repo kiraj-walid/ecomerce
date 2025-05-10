@@ -22,7 +22,7 @@ require_once __DIR__ . '/functions.php';
                 <i class="fas fa-home"></i>
                 <span>Home</span>
             </a>
-            <a href="shop.php" class="nav-link">
+            <a href="search.php" class="nav-link">
                 <i class="fas fa-shopping-bag"></i>
                 <span>Shop</span>
             </a>
