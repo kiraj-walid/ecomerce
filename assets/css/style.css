@@ -7,7 +7,7 @@
 
 body {
     font-family: 'Segoe UI', sans-serif;
-    background-color: #f0f2f5;
+    background-color: #f0f5f3;
 }
 
 /* Navbar
@@ -453,15 +453,80 @@ footer {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    align-items: center;
+    gap: 12px;
+    max-width: 400px;
+}
+
+.product-image-gallery {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    margin-bottom: 10px;
+    width: 100%;
+    position: relative;
 }
 
 .product-image-detail {
+    max-width: 340px;
     width: 100%;
-    max-width: 400px;
     height: auto;
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 0;
+}
+
+.gallery-arrow {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #fff;
+    border-radius: 50%;
+    padding: 8px;
+    transition: background 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px rgba(44,62,80,0.10);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    border: 1px solid #eee;
+}
+
+.gallery-arrow-left {
+    left: -28px;
+}
+
+.gallery-arrow-right {
+    right: -28px;
+}
+
+.gallery-arrow:hover {
+    background: #f39c12;
+    color: #fff;
+}
+
+.product-thumbnails {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+    justify-content: center;
+}
+
+.product-thumb {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 2px solid #eee;
+    cursor: pointer;
+    transition: border 0.2s;
+}
+
+.product-thumb:hover {
+    border: 2px solid #f39c12;
 }
 
 .product-info {
@@ -507,6 +572,7 @@ footer {
 .product-actions .add-to-cart-btn:hover {
     background-color: #e67e22;
 }
+
 /* Product Detail Page */
 .product-detail-page {
     padding: 30px;
@@ -697,4 +763,16 @@ footer {
     box-shadow: 0 2px 16px rgba(44,62,80,0.04);
     padding: 32px 0 40px 0;
     margin-bottom: 32px;
+}
+
+@media (max-width: 600px) {
+    .gallery-arrow-left {
+        left: -10px;
+    }
+    .gallery-arrow-right {
+        right: -10px;
+    }
+    .product-image-detail {
+        max-width: 90vw;
+    }
 }
