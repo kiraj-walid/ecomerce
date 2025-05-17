@@ -59,7 +59,7 @@ $images = $stmt_imgs->fetchAll(PDO::FETCH_COLUMN);
         <div class="product-info">
             <h2 class="product-title"><?= htmlspecialchars($product['nom']) ?></h2>
             <div class="product-meta">
-                <span class="product-price">Prix : <?= number_format($product['prix'], 2) ?> €</span>
+                <span class="product-price">Prix : <?= number_format($product['prix'], 2) ?> MAD</span>
                 <span class="product-category">Catégorie : <?= htmlspecialchars($product['categorie']) ?></span>
             </div>
             <div class="product-description">

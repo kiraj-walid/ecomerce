@@ -10,6 +10,7 @@ $products = $pdo->query('SELECT * FROM produits ORDER BY id DESC LIMIT 8')->fetc
 $categories = $pdo->query("SELECT DISTINCT categorie FROM produits WHERE categorie IS NOT NULL AND categorie != ''")->fetchAll(PDO::FETCH_COLUMN);
 ?>
 
+<main class="main-content">
 <!-- Hero Section -->
 <div class="hero-section" style="background-image: url('assets/images/landingpage.webp');">
     <div class="hero-overlay"></div>
@@ -20,7 +21,7 @@ $categories = $pdo->query("SELECT DISTINCT categorie FROM produits WHERE categor
         </div>
         <div class="hero-search">
             <form action="search.php" method="GET">
-                <input type="text" name="q" placeholder="Rechercher un produit..." class="search-input">
+                <input type="text" name="keyword" placeholder="Rechercher un produit..." class="search-input">
                 <button type="submit" class="hero-btn">Rechercher</button>
             </form>
         </div>
@@ -67,9 +68,9 @@ $categories = $pdo->query("SELECT DISTINCT categorie FROM produits WHERE categor
                     <div class="product-rating">★★★★☆</div>
                     <span><?= number_format($prod['prix'], 2) ?> MAD</span><br>
                     <span class="product-category"><?= htmlspecialchars($prod['categorie']) ?></span><br>
-                    <div class="product-desc">
+                    <!-- <div class="product-desc">
                         <?= htmlspecialchars(mb_strimwidth($prod['description'], 0, 150, '...')) ?>
-                    </div>
+                    </div> -->
                  
                 </div>
                 <div class="product-actions">
@@ -80,7 +81,7 @@ $categories = $pdo->query("SELECT DISTINCT categorie FROM produits WHERE categor
         <?php endforeach; ?>
     </div>
 <?php endif; ?>
-
+</main>
 
 <!-- Footer Section -->
 <?php include 'includes/footer.php'; ?>

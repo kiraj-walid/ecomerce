@@ -15,6 +15,7 @@ $orders = $stmt->fetchAll();
 
 include 'includes/header.php';
 ?>
+<main class="main-content">
 <div class="orders-container">
     <h2 class="orders-title">Mes Commandes</h2>
     <?php if (count($orders) === 0) : ?>
@@ -42,12 +43,12 @@ include 'includes/header.php';
                         <li class="order-product-item">
                             <span class="order-product-name"><?= htmlspecialchars($item['nom']) ?></span>
                             <span class="order-product-quantity">x <?= $item['quantite'] ?></span>
-                            <span class="order-product-price"><?= number_format($item['prix'], 2) ?> €</span>
+                            <span class="order-product-price"><?= number_format($item['prix'], 2) ?> MAD</span>
                         </li>
                     <?php endforeach; ?>
                     </ul>
                     <div class="order-total">
-                        Total : <?= number_format($total, 2) ?> €
+                        Total : <?= number_format($total, 2) ?> MAD
                     </div>
                 </div>
             </div>
@@ -55,4 +56,5 @@ include 'includes/header.php';
     <?php endif; ?>
     <a href="index.php" class="orders-back-link">Retour à l'accueil</a>
 </div>
+</main>
 <?php include 'includes/footer.php'; ?> 
