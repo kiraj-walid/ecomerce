@@ -67,9 +67,9 @@ $categories = $pdo->query("SELECT DISTINCT categorie FROM produits WHERE categor
                     <div class="product-rating">★★★★☆</div>
                     <span><?= number_format($prod['prix'], 2) ?> MAD</span><br>
                     <span class="product-category"><?= htmlspecialchars($prod['categorie']) ?></span><br>
-                    <div class="product-desc">
+                    <!-- <div class="product-desc">
                         <?= htmlspecialchars(mb_strimwidth($prod['description'], 0, 150, '...')) ?>
-                    </div>
+                    </div> -->
                  
                 </div>
                 <div class="product-actions">
