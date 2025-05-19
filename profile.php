@@ -54,18 +54,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 include 'includes/header.php';
 ?>
-<h2>Mon Profil</h2>
-<?php if (!empty($message)) : ?>
-    <div style="color: green; margin-bottom: 10px;"> <?= $message ?> </div>
-<?php endif; ?>
-<form method="post" action="profile.php">
-    <label>Nom d'utilisateur :</label><br>
-    <input type="text" name="username" value="<?= isset($user['nom']) ? htmlspecialchars($user['nom']) : '' ?>" required><br>
-    <label>Email :</label><br>
-    <input type="email" name="email" value="<?= isset($user['email']) ? htmlspecialchars($user['email']) : '' ?>" required><br>
-    <label>Nouveau mot de passe :</label><br>
-    <input type="password" name="new_password" placeholder="Laisser vide pour ne pas changer"><br>
-    <button type="submit">Mettre à jour</button>
-</form>
-<a href="orders.php">Voir mes commandes</a>
+<div class="profile-container">
+    <h2 class="profile-title">Mon Profil</h2>
+    <?php if (!empty($message)) : ?>
+        <div class="profile-message"><?= $message ?></div>
+    <?php endif; ?>
+    <form method="post" action="profile.php" class="profile-form">
+        <label>Nom d'utilisateur :</label>
+        <input type="text" name="username" value="<?= isset($user['nom']) ? htmlspecialchars($user['nom']) : '' ?>" required>
+        <label>Email :</label>
+        <input type="email" name="email" value="<?= isset($user['email']) ? htmlspecialchars($user['email']) : '' ?>" required>
+        <label>Nouveau mot de passe :</label>
+        <input type="password" name="new_password" placeholder="Laisser vide pour ne pas changer">
+        <button type="submit">Mettre à jour</button>
+    </form>
+    <a href="orders.php" class="profile-link">Voir mes commandes</a>
+</div>
 <?php include 'includes/footer.php'; ?> 

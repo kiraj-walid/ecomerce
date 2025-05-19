@@ -34,6 +34,14 @@ require_once __DIR__ . '/functions.php';
 
         <div class="nav-actions">
             <?php if(isset($_SESSION['user_id'])): ?>
+                <a href="orders.php" class="nav-link">
+                    <i class="fas fa-box"></i>
+                    <span>Mes commandes</span>
+                </a>
+                <a href="profile.php" class="nav-link">
+                    <i class="fas fa-user"></i>
+                    <span>Profil</span>
+                </a>
                 <a href="logout.php" class="nav-link">
                     <i class="fas fa-sign-out-alt"></i>
                     <span>Logout</span>

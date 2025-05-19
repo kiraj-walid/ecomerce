@@ -49,6 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['place_order'])) {
 
 include 'includes/header.php';
 ?>
+<main class="main-content">
 <div class="order-container">
     <h2 class="order-title">Finaliser la commande</h2>
     <?php if (!empty($message)) : ?>
@@ -65,13 +66,13 @@ include 'includes/header.php';
             <?php foreach ($cart_items as $item) : ?>
             <tr>
                 <td><?= htmlspecialchars($item['nom']) ?></td>
-                <td><?= number_format($item['prix'], 2) ?> €</td>
+                <td><?= number_format($item['prix'], 2) ?> MAD</td>
                 <td><?= $item['quantite'] ?></td>
-                <td><?= number_format($item['prix'] * $item['quantite'], 2) ?> €</td>
+                <td><?= number_format($item['prix'] * $item['quantite'], 2) ?> MAD</td>
             </tr>
             <?php endforeach; ?>
         </table>
-        <p class="order-total">Total à payer : <?= number_format($total, 2) ?> €</p>
+        <p class="order-total">Total à payer : <?= number_format($total, 2) ?> MAD</p>
         <form method="post" action="order.php" class="order-form">
             <label>Mode de paiement :</label>
             <select name="payment_method" required>
@@ -91,4 +92,5 @@ include 'includes/header.php';
         <a href="cart.php" class="order-link">Retour au panier</a>
     </div>
 </div>
+</main>
 <?php include 'includes/footer.php'; ?> 

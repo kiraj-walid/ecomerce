@@ -60,10 +60,10 @@ include '../includes/admin_header.php';
             foreach ($items as $item) :
                 $total += $item['prix'] * $item['quantite'];
             ?>
-                <li><?= htmlspecialchars($item['nom']) ?> x <?= $item['quantite'] ?> (<?= number_format($item['prix'], 2) ?> €)</li>
+                <li><?= htmlspecialchars($item['nom']) ?> x <?= $item['quantite'] ?> (<?= number_format($item['prix'], 2) ?> MAD)</li>
             <?php endforeach; ?>
             </ul>
-            Total : <strong><?= number_format($total, 2) ?> €</strong>
+            Total : <strong><?= number_format($total, 2) ?> MAD</strong>
         </div>
     <?php endforeach; ?>
 <?php endif; ?>

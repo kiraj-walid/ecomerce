@@ -12,14 +12,15 @@ $message = '';
 // Ajouter un produit au panier
 if (isset($_GET['add'])) {
     $produit_id = intval($_GET['add']);
+    $quantite = isset($_GET['quantity']) ? intval($_GET['quantity']) : 1;
     $stmt = $pdo->prepare('SELECT id FROM paniers WHERE utilisateur_id = ? AND produit_id = ?');
     $stmt->execute([$user_id, $produit_id]);
     if ($stmt->fetch()) {
-        $stmt = $pdo->prepare('UPDATE paniers SET quantite = quantite + 1 WHERE utilisateur_id = ? AND produit_id = ?');
-        $stmt->execute([$user_id, $produit_id]);
+        $stmt = $pdo->prepare('UPDATE paniers SET quantite = quantite + ? WHERE utilisateur_id = ? AND produit_id = ?');
+        $stmt->execute([$quantite, $user_id, $produit_id]);
     } else {
-        $stmt = $pdo->prepare('INSERT INTO paniers (utilisateur_id, produit_id, quantite) VALUES (?, ?, 1)');
-        $stmt->execute([$user_id, $produit_id]);
+        $stmt = $pdo->prepare('INSERT INTO paniers (utilisateur_id, produit_id, quantite) VALUES (?, ?, ?)');
+        $stmt->execute([$user_id, $produit_id, $quantite]);
     }
     $message = "Produit ajouté au panier.";
 }
@@ -54,6 +55,7 @@ foreach ($cart_items as $item) {
 
 include 'includes/header.php';
 ?>
+<main class="main-content">
 <div class="cart-container">
     <h2 class="cart-title">Mon Panier</h2>
     <?php if (!empty($message)) : ?>
@@ -74,9 +76,9 @@ include 'includes/header.php';
             <?php foreach ($cart_items as $item) : ?>
             <tr>
                 <td><?= htmlspecialchars($item['nom']) ?></td>
-                <td><?= number_format($item['prix'], 2) ?> €</td>
+                <td><?= number_format($item['prix'], 2) ?> MAD</td>
                 <td><input type="number" name="qty[<?= $item['panier_id'] ?>]" value="<?= $item['quantite'] ?>" min="1"></td>
-                <td><?= number_format($item['prix'] * $item['quantite'], 2) ?> €</td>
+                <td><?= number_format($item['prix'] * $item['quantite'], 2) ?> MAD</td>
                 <td><a href="cart.php?delete=<?= $item['panier_id'] ?>" class="delete-link" onclick="return confirm('Supprimer ce produit ?');">Supprimer</a></td>
             </tr>
             <?php endforeach; ?>
@@ -84,11 +86,12 @@ include 'includes/header.php';
         <div class="cart-actions">
             <button type="submit" name="update_qty" class="cart-update-btn">Mettre à jour les quantités</button>
             <div>
-                <p class="cart-total">Total : <?= number_format($total, 2) ?> €</p>
+                <p class="cart-total">Total : <?= number_format($total, 2) ?> MAD</p>
                 <a href="order.php" class="cart-checkout-btn">Finaliser la commande</a>
             </div>
         </div>
     </form>
     <?php endif; ?>
 </div>
+</main>
 <?php include 'includes/footer.php'; ?> 

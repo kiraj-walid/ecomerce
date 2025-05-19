@@ -76,7 +76,7 @@ include 'includes/header.php';
                     </div>
                 </div>
                 <h3><?= htmlspecialchars($prod['nom']) ?></h3>
-                <p class="product-price"><?= number_format($prod['prix'], 2) ?> €</p>
+                <p class="product-price"><?= number_format($prod['prix'], 2) ?> MAD</p>
                 <p class="product-category"><?= htmlspecialchars($prod['categorie']) ?></p>
                 <a href="cart.php?add=<?= $prod['id'] ?>" class="add-to-cart-btn">Ajouter au panier</a>
             </div>
