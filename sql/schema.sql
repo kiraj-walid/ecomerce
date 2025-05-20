@@ -19,7 +19,8 @@ CREATE TABLE IF NOT EXISTS produits (
     description TEXT,
     prix DECIMAL(10,2),
     categorie VARCHAR(50),
-    image VARCHAR(255)
+    image VARCHAR(255),
+    stock INT DEFAULT 0
 );
 
 -- Table des commandes

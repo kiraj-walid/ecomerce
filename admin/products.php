@@ -90,6 +90,7 @@ $filtered_products = array_filter($products, function($prod) use ($search_name, 
                 <th>Image</th>
                 <th>Nom</th>
                 <th>Prix</th>
+                <th>Stock</th>
                 <th>Catégorie</th>
                 <th>Actions</th>
             </tr>
@@ -105,6 +106,7 @@ $filtered_products = array_filter($products, function($prod) use ($search_name, 
                 <td><img src="<?= $img_url ?>" alt="Image produit"></td>
                 <td><?= htmlspecialchars($prod['nom']) ?></td>
                 <td><?= number_format($prod['prix'], 2) ?> €</td>
+                <td><?= $prod['stock'] ?></td>
                 <td><?= htmlspecialchars($prod['categorie']) ?></td>
                 <td>
                     <div class="admin-actions">

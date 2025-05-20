@@ -1362,3 +1362,13 @@ footer {
     width: 100%;
 }
 
+.product-stock {
+    font-size: 0.9em;
+    color: #666;
+    margin: 5px 0;
+}
+
+.product-stock:before {
+    content: '📦 ';
+}
+

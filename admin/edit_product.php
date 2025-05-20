@@ -34,10 +34,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_product'])) {
     $prix = floatval($_POST['price']);
     $categorie = trim($_POST['category']);
     $image_list = trim($_POST['images']);
+    $stock = intval($_POST['stock']);
 
     if ($nom && $prix) {
-        $stmt = $pdo->prepare('UPDATE produits SET nom=?, description=?, prix=?, categorie=? WHERE id=?');
-        if ($stmt->execute([$nom, $description, $prix, $categorie, $id])) {
+        $stmt = $pdo->prepare('UPDATE produits SET nom=?, description=?, prix=?, categorie=?, stock=? WHERE id=?');
+        if ($stmt->execute([$nom, $description, $prix, $categorie, $stock, $id])) {
             // Mettre à jour les images
             $pdo->prepare('DELETE FROM images_produit WHERE produit_id = ?')->execute([$id]);
             if (!empty($image_list)) {
@@ -79,6 +80,8 @@ include '../includes/admin_header.php';
         <textarea name="description" rows="2"><?= htmlspecialchars($product['description']) ?></textarea>
         <label>Prix :</label>
         <input type="number" step="0.01" name="price" value="<?= $product['prix'] ?>" required>
+        <label>Stock :</label>
+        <input type="number" name="stock" value="<?= $product['stock'] ?>" min="0" required>
         <label>Catégorie :</label>
         <input type="text" name="category" value="<?= htmlspecialchars($product['categorie']) ?>">
         <label>Images (fichiers séparés par des virgules) :</label>

@@ -10,9 +10,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_product'])) {
     $prix = floatval($_POST['price']);
     $categorie = trim($_POST['category']);
     $image_list = trim($_POST['images']);
+    $stock = intval($_POST['stock']);
     if ($nom && $prix) {
-        $stmt = $pdo->prepare('INSERT INTO produits (nom, description, prix, categorie) VALUES (?, ?, ?, ?)');
-        if ($stmt->execute([$nom, $description, $prix, $categorie])) {
+        $stmt = $pdo->prepare('INSERT INTO produits (nom, description, prix, categorie, stock) VALUES (?, ?, ?, ?, ?)');
+        if ($stmt->execute([$nom, $description, $prix, $categorie, $stock])) {
             $produit_id = $pdo->lastInsertId();
             if (!empty($image_list)) {
                 $images = array_map('trim', explode(',', $image_list));
@@ -47,6 +48,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_product'])) {
         <textarea name="description" rows="2"></textarea>
         <label>Prix :</label>
         <input type="number" step="0.01" name="price" required>
+        <label>Stock :</label>
+        <input type="number" name="stock" value="0" min="0" required>
         <label>Catégorie :</label>
         <input type="text" name="category">
         <label>Images (fichiers séparés par des virgules) :</label>
